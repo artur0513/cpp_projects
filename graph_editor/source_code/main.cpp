@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+п»ї#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -27,7 +27,7 @@ vector<Vector2f> load_graph(string filename) {
         string line;
         while (getline(in_file, line)) {
             if (line[0] != '#') {
-                int space = line.find_first_of(' '); // Вообще в строке должен быть только один пробел
+                int space = line.find_first_of(' '); // Р’РѕРѕР±С‰Рµ РІ СЃС‚СЂРѕРєРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ РїСЂРѕР±РµР»
                 string s1 = line.substr(0, space);
                 string s2 = line.substr(space + 1);
                 Vector2f point;
@@ -122,9 +122,11 @@ int main()
     bool unsaved_changes = false;
 
     Font font;
+    
     if (!font.loadFromFile("font.ttf")) {
         cout << "font not found!" << endl;
     }
+    
     Text current_command_text;
     current_command_text.setFont(font);
     //current_command_text.setFillColor(Color(100, 100, 100));
@@ -138,7 +140,7 @@ int main()
         float curr_screen_width = window.getSize().x;
         float curr_screen_height = window.getSize().y;
 
-        // Сортируем точки графика по y координате
+        // РЎРѕСЂС‚РёСЂСѓРµРј С‚РѕС‡РєРё РіСЂР°С„РёРєР° РїРѕ y РєРѕРѕСЂРґРёРЅР°С‚Рµ
         std::sort(graph_points.begin(),
             graph_points.end(),
             [](const Vector2f& lhs, const Vector2f& rhs)
@@ -146,7 +148,7 @@ int main()
                 return lhs.x < rhs.x;
             });
 
-        // Пересчитываем координаты точек графика в экранные координаты с учетом положения камеры и масштаба
+        // РџРµСЂРµСЃС‡РёС‚С‹РІР°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ С‚РѕС‡РµРє РіСЂР°С„РёРєР° РІ СЌРєСЂР°РЅРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ СЃ СѓС‡РµС‚РѕРј РїРѕР»РѕР¶РµРЅРёСЏ РєР°РјРµСЂС‹ Рё РјР°СЃС€С‚Р°Р±Р°
         camera_points.clear();
         for (int i = 0; i < graph_points.size(); i++) {
             vec = (camera_pos - graph_points[i]) * scale;
@@ -156,7 +158,7 @@ int main()
             camera_points.push_back(vec);
         }
 
-        // Считаем шаг координатной сетки и все такое
+        // РЎС‡РёС‚Р°РµРј С€Р°Рі РєРѕРѕСЂРґРёРЅР°С‚РЅРѕР№ СЃРµС‚РєРё Рё РІСЃРµ С‚Р°РєРѕРµ
         float max_y_coord = camera_pos.y + screen_height / (2 * scale);
         float min_y_coord = camera_pos.y - screen_height / (2 * scale);
         float delta_y = max_y_coord - min_y_coord;
@@ -168,7 +170,7 @@ int main()
         }
         float start_y_coord = ceil(min_y_coord / h_lines_step) * h_lines_step;
 
-        // Считаем шаг координатной сетки и все такое
+        // РЎС‡РёС‚Р°РµРј С€Р°Рі РєРѕРѕСЂРґРёРЅР°С‚РЅРѕР№ СЃРµС‚РєРё Рё РІСЃРµ С‚Р°РєРѕРµ
         float max_x_coord = camera_pos.x + screen_width / (2 * scale);
         float min_x_coord = camera_pos.x - screen_width / (2 * scale);
         float delta_x = max_x_coord - min_x_coord;
@@ -180,7 +182,7 @@ int main()
         }
         float start_x_coord = ceil(min_x_coord / v_lines_step) * v_lines_step;
 
-        // Смотрим на какую точку наведена мышка и запоминаем ее номер
+        // РЎРјРѕС‚СЂРёРј РЅР° РєР°РєСѓСЋ С‚РѕС‡РєСѓ РЅР°РІРµРґРµРЅР° РјС‹С€РєР° Рё Р·Р°РїРѕРјРёРЅР°РµРј РµРµ РЅРѕРјРµСЂ
         mouse_pos = Mouse::getPosition(window);
         mouse_pos.x = mouse_pos.x * screen_width / curr_screen_width;
         mouse_pos.y = mouse_pos.y * screen_height / curr_screen_height;
@@ -192,13 +194,13 @@ int main()
                 current_point = i;
             }
         }
-        // Если зажата ПКМ, то можем двигать камеру
+        // Р•СЃР»Рё Р·Р°Р¶Р°С‚Р° РџРљРњ, С‚Рѕ РјРѕР¶РµРј РґРІРёРіР°С‚СЊ РєР°РјРµСЂСѓ
         if (Mouse::isButtonPressed(Mouse::Left))
         {
             camera_pos.x = camera_pos.x - (mouse_pos.x - prev_mouse_pos.x) / scale;
             camera_pos.y = camera_pos.y + (mouse_pos.y - prev_mouse_pos.y) / scale;
         }
-        // Если нажали ЛКМ, то создаем новую точку
+        // Р•СЃР»Рё РЅР°Р¶Р°Р»Рё Р›РљРњ, С‚Рѕ СЃРѕР·РґР°РµРј РЅРѕРІСѓСЋ С‚РѕС‡РєСѓ
         if (Mouse::isButtonPressed(Mouse::Right) && right_last_state == false) {
             float new_point_x = camera_pos.x + (mouse_pos.x - screen_width / 2) / scale;
             float new_point_y = camera_pos.y - (mouse_pos.y - screen_height / 2) / scale;
@@ -209,7 +211,7 @@ int main()
         right_last_state = Mouse::isButtonPressed(Mouse::Right);
         prev_mouse_pos = mouse_pos;
 
-        // Обработка всяких событий
+        // РћР±СЂР°Р±РѕС‚РєР° РІСЃСЏРєРёС… СЃРѕР±С‹С‚РёР№
         Event event;
         while (window.pollEvent(event))
         {
@@ -217,8 +219,8 @@ int main()
                 window.close();
             if (event.type == sf::Event::MouseWheelMoved)
             {
-                scale *= pow(1.05, event.mouseWheel.delta);//event.mouseWheel.delta равен 1 или -1 в зависимости от 
-                //направления кручения колесика мыши
+                scale *= pow(1.05, event.mouseWheel.delta);//event.mouseWheel.delta СЂР°РІРµРЅ 1 РёР»Рё -1 РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ 
+                //РЅР°РїСЂР°РІР»РµРЅРёСЏ РєСЂСѓС‡РµРЅРёСЏ РєРѕР»РµСЃРёРєР° РјС‹С€Рё
             }
             if (event.type == Event::KeyPressed) {
                 if (Keyboard::isKeyPressed(Keyboard::Delete) && current_point > -1) {
@@ -238,11 +240,11 @@ int main()
                     }
                 }
                 if (Keyboard::isKeyPressed(Keyboard::Enter)) {
-                    // Добавляем в конец строки пробел
+                    // Р”РѕР±Р°РІР»СЏРµРј РІ РєРѕРЅРµС† СЃС‚СЂРѕРєРё РїСЂРѕР±РµР»
                     if (current_command[current_command.size() - 1] != ' ') {
                         current_command += ' ';
                     }
-                    // Удаляем из строки лишние пробелы (где их 2 и более подряд)
+                    // РЈРґР°Р»СЏРµРј РёР· СЃС‚СЂРѕРєРё Р»РёС€РЅРёРµ РїСЂРѕР±РµР»С‹ (РіРґРµ РёС… 2 Рё Р±РѕР»РµРµ РїРѕРґСЂСЏРґ)
                     int i = 0;
                     while (i < current_command.size()-1) {
                         if (current_command[i] == ' ' && current_command[i + 1] == ' ') {
@@ -252,24 +254,27 @@ int main()
                             i++;
                         }
                     }
-                    // Считываем саму команду и атрибуты
+                    // РЎС‡РёС‚С‹РІР°РµРј СЃР°РјСѓ РєРѕРјР°РЅРґСѓ Рё Р°С‚СЂРёР±СѓС‚С‹
                     int space = current_command.find_first_of(' ');
                     string command = current_command.substr(0, space);
                     vector<string> attributes;
                     while (current_command.find_first_of(' ', space + 1) != string::npos) {
-                        int substr_len = current_command.find_first_of(' ', space + 1) - space;                            string attribute = current_command.substr(space + 1, substr_len);
+                        int substr_len = current_command.find_first_of(' ', space + 1) - space;
+	                    string attribute = current_command.substr(space + 1, substr_len);
                         space = current_command.find_first_of(' ', space + 1);
                         attributes.push_back(attribute);
                     }
 
-                    // При необходимости выводим то, что считала программа
+                    // РџСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РІС‹РІРѕРґРёРј С‚Рѕ, С‡С‚Рѕ СЃС‡РёС‚Р°Р»Р° РїСЂРѕРіСЂР°РјРјР°
+                    /*
                     cout << "program get command: " << command << endl;
                     cout << "with following attributes: " << endl;
                     for (int i = 0; i < attributes.size(); i++) {
                         cout << "attribute #" << i << ": " << attributes[i] << endl;
                     }
+                    */
 
-                    // Здесь обрабатываем команды
+                    // Р—РґРµСЃСЊ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РєРѕРјР°РЅРґС‹
                     if (command == "save") {
                         save_graph(graph_points, attributes[0]);
                         unsaved_changes = false;
@@ -288,7 +293,7 @@ int main()
                         unsaved_changes = true;
                     }
 
-                    // Обнуляем переменные
+                    // РћР±РЅСѓР»СЏРµРј РїРµСЂРµРјРµРЅРЅС‹Рµ
                     current_command.clear();
                     attributes.clear();
                     
@@ -296,7 +301,7 @@ int main()
             }
             else if (event.type == sf::Event::TextEntered)
             {
-                // отсекаем не ASCII символы
+                // РѕС‚СЃРµРєР°РµРј РЅРµ ASCII СЃРёРјРІРѕР»С‹
                 if (event.text.unicode < 127 && event.text.unicode > 31)
                 {
                     //cout << "symbol entered: " << event.text.unicode << endl;
@@ -308,7 +313,7 @@ int main()
         window.clear();
         
         window.draw(current_command_text);
-        // Рисуем сетку и циферки на ней по оси y
+        // Р РёСЃСѓРµРј СЃРµС‚РєСѓ Рё С†РёС„РµСЂРєРё РЅР° РЅРµР№ РїРѕ РѕСЃРё y
         float y_coord = start_y_coord;
         for (int i = 0; i < h_lines_count; i++) {
             float screen_y = (- y_coord + camera_pos.y) * scale + screen_height / 2;
@@ -331,7 +336,7 @@ int main()
 
             y_coord += h_lines_step;
         }
-        // Рисуем сетку и циферки на ней по оси x
+        // Р РёСЃСѓРµРј СЃРµС‚РєСѓ Рё С†РёС„РµСЂРєРё РЅР° РЅРµР№ РїРѕ РѕСЃРё x
         float x_coord = start_x_coord;
         for (int i = 0; i < v_lines_count; i++) {
             float screen_x = (x_coord - camera_pos.x) * scale + screen_width / 2;
@@ -353,7 +358,7 @@ int main()
 
             x_coord += v_lines_step;
         }
-        // Рисуем линии самого графика и кружки на месте точек
+        // Р РёСЃСѓРµРј Р»РёРЅРёРё СЃР°РјРѕРіРѕ РіСЂР°С„РёРєР° Рё РєСЂСѓР¶РєРё РЅР° РјРµСЃС‚Рµ С‚РѕС‡РµРє
         for (int i = 1; i < camera_points.size(); i++) {
             draw_line(window, camera_points[i], camera_points[i-1]);
         }
