@@ -9,10 +9,7 @@ struct vec2 {
 
 	vec2() {};
 
-	vec2(T _x, T _y) {
-		x = _x;
-		y = _y;
-	}
+	vec2(T _x, T _y) : x(_x), y(_y) {}
 
 	inline vec2<T>& operator+=(const vec2<T>& v) {
 		x += v.x;
@@ -55,6 +52,11 @@ inline vec2<T> operator*(const vec2<T>& l, const T& r) {
 }
 
 template<class T>
+inline vec2<T> operator*(const T& l, const vec2<T>& r) {
+	return vec2<T>(l * r.x, l * r.y);
+}
+
+template<class T>
 inline vec2<T> operator/(const vec2<T>& l, const T& r) {
 	return vec2<T>(l.x / r, l.y / r);
 }
@@ -78,5 +80,3 @@ template<class T>
 inline T normalize(const vec2<T>& v) {
 	return v/length(v);
 }
-
-// for vec3 also add cross product
