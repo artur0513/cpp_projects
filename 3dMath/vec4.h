@@ -39,6 +39,11 @@ struct vec4 {
 		w /= v;
 		return *this;
 	}
+
+	inline vec4<T>& normalize() {
+		*this /= length(*this);
+		return *this;
+	}
 };
 
 template<class T>
@@ -82,6 +87,6 @@ inline T length(const vec4<T>& v) {
 }
 
 template<class T>
-inline T normalize(const vec4<T>& v) {
+inline vec4<T> normalize(const vec4<T>& v) {
 	return v / length(v);
 }

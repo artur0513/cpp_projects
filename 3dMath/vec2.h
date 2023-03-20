@@ -1,8 +1,6 @@
 #pragma once
 #include <cmath>
 
-// I dont like these templates, what should i do?
-
 template<class T>
 struct vec2 {
 	T x, y;
@@ -32,6 +30,11 @@ struct vec2 {
 	inline vec2<T>& operator/=(const T& v) {
 		x /= v;
 		y /= v;
+		return *this;
+	}
+
+	inline vec2<T>& normalize() {
+		*this /= length(*this);
 		return *this;
 	}
 };
@@ -77,6 +80,6 @@ inline T length(const vec2<T>& v) {
 }
 
 template<class T>
-inline T normalize(const vec2<T>& v) {
+inline vec2<T> normalize(const vec2<T>& v) {
 	return v/length(v);
 }

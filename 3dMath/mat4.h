@@ -1,6 +1,14 @@
 ﻿#pragma once
 #include <iostream>
+#include <cmath>
 #include "vec4.h"
+
+struct PersProjInfo { // информация о матрице перспективной проекции (float or double?)
+	float fov_y; // Угол обзора
+	float aspect_ratio; // Соотношение сторон
+	float z_far; // Дальняя плоскость отсечения
+	float z_near; // Ближняя плоскость отсечения
+};
 
 template <class T>
 struct mat4 {
@@ -34,6 +42,8 @@ private:
 	};
 
 public:
+	// Default copy constructor works OK!
+
 	inline mat4line<T> operator[](int n) {
 		n *= 4;
 		return mat4line<T>(data[n], data[n + 1], data[n + 2], data[n + 3]);
@@ -48,6 +58,68 @@ public:
 
 	template <class T>
 	friend mat4<T> operator*(const mat4<T>& l, const mat4<T>& r);
+
+	template <class T>
+	friend vec4<T> operator*(const vec4<T>& l, const mat4<T>& r);
+
+	void init_identity() {
+		data[0] = 1; data[4] = 0; data[8] = 0; data[12] = 0;
+		data[1] = 0; data[5] = 1; data[9] = 0; data[13] = 0;
+		data[2] = 0; data[6] = 0; data[10] = 1; data[14] = 0;
+		data[3] = 0; data[7] = 0; data[11] = 0; data[15] = 1;
+	}
+
+	void init_perspective(const PersProjInfo& p) {
+		data[0] = 1.0 / tan(p.fov_y / 2) / p.aspect_ratio; data[4] = 0; data[8] = 0; data[12] = 0;
+		data[1] = 0; data[5] = 1/ tan(p.fov_y / 2); data[9] = 0; data[13] = 0;
+		data[2] = 0; data[6] = 0; data[10] = (p.z_far + p.z_near) / (p.z_far - p.z_near); data[14] = 1;
+		data[3] = 0; data[7] = 0; data[11] = - 2.0 * p.z_far * p.z_near / (p.z_far - p.z_near); data[15] = 0;
+	}
+
+	void init_rotation_X(T angle) {
+		data[0] = 1; data[4] = 0;          data[8] = 0;           data[12] = 0;
+		data[1] = 0; data[5] = cos(angle); data[9] = -sin(angle); data[13] = 0;
+		data[2] = 0; data[6] = sin(angle); data[10] = cos(angle); data[14] = 0;
+		data[3] = 0; data[7] = 0;          data[11] = 0;          data[15] = 1;
+	}
+
+	void init_rotation_Y(T angle) {
+		data[0] = cos(angle); data[4] = 0; data[8] = -sin(angle); data[12] = 0;
+		data[1] = 0;          data[5] = 1; data[9] = 0;           data[13] = 0;
+		data[2] = sin(angle); data[6] = 0; data[10] = cos(angle); data[14] = 0;
+		data[3] = 0;          data[7] = 0; data[11] = 0;          data[15] = 1;
+	}
+
+	void init_rotation_Z(T angle) {
+		data[0] = cos(angle); data[4] = -sin(angle); data[8] = 0;  data[12] = 0;
+		data[1] = sin(angle); data[5] = cos(angle);  data[9] = 0;  data[13] = 0;
+		data[2] = 0;          data[6] = 0;           data[10] = 1; data[14] = 0;
+		data[3] = 0;          data[7] = 0;           data[11] = 0; data[15] = 1;
+	}
+
+	void init_scale(T scale_x, T scale_y, T scale_z) {
+		data[0] = scale_x; data[4] = 0;       data[8] = 0;        data[12] = 0;
+		data[1] = 0;       data[5] = scale_y; data[9] = 0;        data[13] = 0;
+		data[2] = 0;       data[6] = 0;       data[10] = scale_z; data[14] = 0;
+		data[3] = 0;       data[7] = 0;       data[11] = 0;       data[15] = 1;
+	}
+
+	void init_transfer(T move_x, T move_y, T move_z) {
+		data[0] = 1; data[4] = 0; data[8] = 0; data[12] = move_x;
+		data[1] = 0; data[5] = 1; data[9] = 0; data[13] = move_y;
+		data[2] = 0; data[6] = 0; data[10] = 1; data[14] = move_z;
+		data[3] = 0; data[7] = 0; data[11] = 0; data[15] = 1;
+	}
+
+	void init_transfer(const vec3<T>& move) {
+		init_transfer(move.x, move.y, move.z);
+	}
+
+	//void inverse() to be added
+
+	//T determinant() to be added
+
+	//void init_rotation(const quaternion& quat) - to be added
 };
 
 template <class T>
@@ -63,16 +135,28 @@ template <class T>
 inline mat4<T> operator*(const mat4<T>& l, const mat4<T>& r) {
 	mat4<T> ret;
 
-	for (unsigned i = 0; i < 4; i++) { 
+	for (unsigned i = 0; i < 4; i++) {
 		for (unsigned j = 0; j < 4; j++) { // i - строка, j - столбец
 			unsigned qj = j * 4; // quatro - j
 
-			ret.data[j * 4 + i] = l.data[i] * r.data[j * 4] +
-				l.data[i + 4] * r.data[j * 4 + 1] +
-				l.data[i + 8] * r.data[j * 4 + 2] +
-				l.data[i + 12] * r.data[j * 4 + 3];
+			ret.data[j * 4 + i] = l.data[i] * r.data[qj] +
+				l.data[i + 4] * r.data[qj + 1] +
+				l.data[i + 8] * r.data[qj + 2] +
+				l.data[i + 12] * r.data[qj + 3];
 		}
 	}
 
+	return ret;
+}
+
+template <class T>
+inline vec4<T> operator*(const vec4<T>& l, const mat4<T>& r) {
+	vec4<T> ret;
+	
+	ret.x = l.x * r.data[0] + l.y * r.data[1] + l.z * r.data[2] + l.w * r.data[3];
+	ret.y = l.x * r.data[4] + l.y * r.data[5] + l.z * r.data[6] + l.w * r.data[7];
+	ret.z = l.x * r.data[8] + l.y * r.data[9] + l.z * r.data[10] + l.w * r.data[11];
+	ret.w = l.x * r.data[12] + l.y * r.data[13] + l.z * r.data[14] + l.w * r.data[15];
+	
 	return ret;
 }

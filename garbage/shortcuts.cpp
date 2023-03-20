@@ -81,3 +81,18 @@ int main()
     file.close();
     return 0;
 }
+
+// =====================================
+
+typedef int Scalar;
+struct Vector
+{
+    union
+    {
+        struct
+        {
+            Scalar x, y;
+        };
+        Scalar v[2];
+    };
+};

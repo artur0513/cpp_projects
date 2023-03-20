@@ -3,6 +3,7 @@
 #include "vec3.h"
 #include "vec4.h"
 #include "mat4.h"
+#include "quat.h"
 
 using vec2i = vec2<int>;
 using vec2f = vec2<float>;
@@ -20,8 +21,13 @@ using mat4i = mat4<int>;
 using mat4f = mat4<float>;
 using mat4d = mat4<double>;
 
+using quatf = quat<float>;
+using quatd = quat<double>;
 
 /*
+Обернуть все в namespace
+Все дублируем в double чтобы попробовать потом сделать двойную точность координат.
+
 Добавить:
 В матрицу 4x4
 Инициализацию как матрицу масштаба, поворота, параллельного переноса, персепективной проекции, и потом еще как матрицу поворота из кватерниона, м.б. еще что то
