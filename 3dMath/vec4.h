@@ -8,6 +8,15 @@ struct vec4 {
 
 	vec4(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
 
+	template<class U>
+	vec4(const vec4<U>& v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
+
+	template<class U>
+	inline vec4<T>& operator=(const vec4<U>& v) {
+		x = v.x; y = v.y, z = v.z, w = v.w;
+		return *this;
+	}
+
 	inline vec4<T>& operator+=(const vec4<T>& v) {
 		x += v.x;
 		y += v.y;
@@ -37,11 +46,6 @@ struct vec4 {
 		y /= v;
 		z /= v;
 		w /= v;
-		return *this;
-	}
-
-	inline vec4<T>& normalize() {
-		*this /= length(*this);
 		return *this;
 	}
 };
@@ -78,15 +82,18 @@ inline T dot(const vec4<T>& l, const vec4<T>& r) {
 
 template<class T>
 inline T cos(const vec4<T>& l, const vec4<T>& r) {
+	static_assert(std::is_floating_point<T>::value, "This operation is supported only for floating point types");
 	return dot(l, r) / length(l) / length(r);
 }
 
 template<class T>
 inline T length(const vec4<T>& v) {
+	static_assert(std::is_floating_point<T>::value, "This operation is supported only for floating point types");
 	return std::sqrt(dot(v, v));
 }
 
 template<class T>
-inline vec4<T> normalize(const vec4<T>& v) {
+[[nodiscard]] inline vec4<T> normalize(const vec4<T>& v) {
+	static_assert(std::is_floating_point<T>::value, "This operation is supported only for floating point types");
 	return v / length(v);
 }
