@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <iostream>
 #include <cmath>
 #include "vec4.h"
 #include "quat.h"
@@ -47,7 +46,10 @@ private:
 public:
 	// Default copy constructor works OK!
 
-	mat4() {};
+	mat4(T x = 0.0) {
+		for (int i = 0; i < 16; i++)
+			data[i] = x;
+	};
 
 	mat4(T a0, T a4, T a8, T a12,
 		T a1, T a5, T a9, T a13,
@@ -169,15 +171,6 @@ public:
 
 	//void init_rotation(const quaternion& quat) - to be added
 };
-
-template <class T>
-std::ostream& operator<< (std::ostream& stream, const mat4<T>& matrix) {
-	stream << matrix.data[0] << " " << matrix.data[4] << " " << matrix.data[8] << " " << matrix.data[12] << "\n";
-	stream << matrix.data[1] << " " << matrix.data[5] << " " << matrix.data[9] << " " << matrix.data[13] << "\n";
-	stream << matrix.data[2] << " " << matrix.data[6] << " " << matrix.data[10] << " " << matrix.data[14] << "\n";
-	stream << matrix.data[3] << " " << matrix.data[7] << " " << matrix.data[11] << " " << matrix.data[15] << "\n";
-	return stream;
-}
 
 template <class T>
 inline mat4<T> operator*(const mat4<T>& l, const mat4<T>& r) {

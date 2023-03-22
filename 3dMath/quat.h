@@ -1,6 +1,5 @@
 #pragma once
 #include <cmath>
-#include <type_traits>
 
 template<class T>
 struct quat {
@@ -24,8 +23,8 @@ struct quat {
 	quat(const quat<U>& q) : x(q.x), y(q.y), z(q.z), w(q.w) {}
 
 	quat(T angle, const vec3<T>& dir) {
-		T sinhalf = sin(dir / 2.0);
-		w = cos(dir / 2.0);
+		T sinhalf = sin(angle / 2.0);
+		w = cos(angle / 2.0);
 		x = dir.x * sinhalf;
 		y = dir.y * sinhalf;
 		z = dir.z * sinhalf;

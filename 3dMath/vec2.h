@@ -3,7 +3,7 @@
 
 template<class T>
 struct vec2 {
-	T x, y;
+	T x = 0.0, y = 0.0;
 
 	vec2() {};
 

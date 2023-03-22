@@ -31,4 +31,7 @@ int main()
     std::cout << x * y; // OK!
 
     std::cout << x * mat4f().init_identity(); // anonymous OK!
+
+    quat<float> q(5, 1, 2, 3);
+    std::cout << q;
 }

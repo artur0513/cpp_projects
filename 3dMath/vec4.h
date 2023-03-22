@@ -2,7 +2,7 @@
 
 template<class T>
 struct vec4 {
-	T x, y, z, w;
+	T x = 0.0, y = 0.0, z = 0.0, w = 0.0;
 
 	vec4() {};
 
