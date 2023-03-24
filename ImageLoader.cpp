@@ -108,7 +108,6 @@ public:
 // Do not forget that DDS texuters will be Y-inverted
 class DDSImage {
 private:
-    uint32_t bitsPerPixel = 32, bytesPerPixel = 4;
     uint32_t mipMapCount = 0;
     GLuint compressionType;
 
@@ -151,7 +150,6 @@ public:
     uint32_t getWidth(int mipMapLevel = 0) { return mipMaps[mipMapLevel].width; }
     uint32_t getHeight(int mipMapLevel = 0) { return mipMaps[mipMapLevel].height; }
     uint32_t getSize(int mipMapLevel = 0) { return mipMaps[mipMapLevel].size; }
-    bool isRGBA() { return bytesPerPixel == 4; }
     auto getData(int mipMapLevel = 0) { return mipMaps[mipMapLevel].pixels.data(); }
 
     bool loadFromFile(std::string filename) {
@@ -233,8 +231,8 @@ int main()
     img2.loadFromFile("test.dds");
 
     /* DDS
-    Протестирована в OpenGL пока только пара картинок с mipMap-ами и на DXT1, и оно работает. 
-    Пока хз какие вообще бывают разновидности dds-ок и как проверять, типо какое бывает число бит на пиксель и т.д. (В dds из paint.net) соответсвующие 
+    Протестирована в OpenGL текстуры с mipMap-ами и без, на DXT1, DXT3, DXT5, и оно работает. 
+    Возможно есть другие разновидности dds-ок, хз как проверять, например какое бывает число бит на пиксель и т.д. В dds сохраненных в paint.net соответсвующие 
     поля uint32_t dwRGBBitCount; uint32_t dwRBitMask; uint32_t dwGBitMask; uint32_t dwBBitMask; uint32_t dwABitMask; ??? вообще равны 0;
 
     Т.к. dds формат был сделан для direct3D, а там система координат перевернута по Y относительно openGL, то и текстуры получатся перевернутыми. Это можно
