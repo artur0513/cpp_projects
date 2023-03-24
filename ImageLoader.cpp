@@ -108,6 +108,7 @@ public:
 // Do not forget that DDS texuters will be Y-inverted
 class DDSImage {
 private:
+    uint32_t bitsPerPixel = 32, bytesPerPixel = 4;
     uint32_t mipMapCount = 0;
     GLuint compressionType;
 
@@ -121,14 +122,13 @@ private:
     struct DDS_PIXELFORMAT {
         uint32_t dwSize; // DDS_PIXELFORMAT size
         uint32_t dwFlags;
-        uint8_t dwFourCC[4]; // Compression format. There will be something like DXT1 (4 bytes, each byte is char)
+        char dwFourCC[4]; // Compression format. There will be something like DXT1 (4 bytes, each byte is char)
         uint32_t dwRGBBitCount;
         uint32_t dwRBitMask;
         uint32_t dwGBitMask;
         uint32_t dwBBitMask;
         uint32_t dwABitMask;
     };
-
     struct DDS_HEADER {
         uint32_t           dwSize; // header size in bytes
         uint32_t           dwFlags;
@@ -150,6 +150,8 @@ public:
     uint32_t getWidth(int mipMapLevel = 0) { return mipMaps[mipMapLevel].width; }
     uint32_t getHeight(int mipMapLevel = 0) { return mipMaps[mipMapLevel].height; }
     uint32_t getSize(int mipMapLevel = 0) { return mipMaps[mipMapLevel].size; }
+    uint32_t getMipMapCount() { return mipMapCount; }
+    GLuint getCompressionType() { return compressionType; }
     auto getData(int mipMapLevel = 0) { return mipMaps[mipMapLevel].pixels.data(); }
 
     bool loadFromFile(std::string filename) {
@@ -172,16 +174,12 @@ public:
         mipMapCount = header.dwMipMapCount;
         mipMaps.resize(mipMapCount);
 
-        mipMaps[0].width = header.dwWidth;
-        mipMaps[0].height = header.dwHeight;
-        mipMaps[0].size = header.dwPitchOrLinearSize;
-
-
-        if (header.ddspf.dwFourCC[0] == 'D' && header.ddspf.dwFourCC[1] == 'X' && header.ddspf.dwFourCC[2] == 'T' && header.ddspf.dwFourCC[3] == '1') // DXT1 check
+        std::string type_str(header.ddspf.dwFourCC);
+        if (type_str == "DXT1") // DXT1 check
             compressionType = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-        else if (header.ddspf.dwFourCC[0] == 'D' && header.ddspf.dwFourCC[1] == 'X' && header.ddspf.dwFourCC[2] == 'T' && header.ddspf.dwFourCC[3] == '3') // DXT3 check
+        else if (type_str == "DXT3") // DXT3 check
             compressionType = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-        else if (header.ddspf.dwFourCC[0] == 'D' && header.ddspf.dwFourCC[1] == 'X' && header.ddspf.dwFourCC[2] == 'T' && header.ddspf.dwFourCC[3] == '5') // DXT5 check
+        else if (type_str == "DXT5") // DXT5 check
             compressionType = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         else {
             std::cerr << "Unsupported DDS compression type. Supported are DXT1, DXT3, DXT5: " << filename << "\n";
@@ -190,7 +188,7 @@ public:
         }
 
         uint32_t blockSize = (compressionType == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
-        uint32_t iHeight = mipMaps[0].height, iWidth = mipMaps[0].width, iSize, sumsize = 0;
+        uint32_t iHeight = header.dwHeight, iWidth = header.dwWidth, iSize, sumsize = 0;
         for (uint32_t i = 0; i < mipMapCount; i++) {
             iSize = ((iWidth + 3) / 4) * ((iHeight + 3) / 4) * blockSize;
             sumsize += iSize;
@@ -231,8 +229,8 @@ int main()
     img2.loadFromFile("test.dds");
 
     /* DDS
-    Протестирована в OpenGL текстуры с mipMap-ами и без, на DXT1, DXT3, DXT5, и оно работает. 
-    Возможно есть другие разновидности dds-ок, хз как проверять, например какое бывает число бит на пиксель и т.д. В dds сохраненных в paint.net соответсвующие 
+    Протестирована в OpenGL текстуры с mipMap-ами и без, на DXT1, DXT3, DXT5, и оно работает. Другие форматы сжатия не поддерживаются.
+    Возможно есть другие разновидности dds-ок, хз как проверять, например какое бывает число бит на пиксель и т.д. В dds сохраненных в paint.net соответсвующие
     поля uint32_t dwRGBBitCount; uint32_t dwRBitMask; uint32_t dwGBitMask; uint32_t dwBBitMask; uint32_t dwABitMask; ??? вообще равны 0;
 
     Т.к. dds формат был сделан для direct3D, а там система координат перевернута по Y относительно openGL, то и текстуры получатся перевернутыми. Это можно
@@ -240,7 +238,6 @@ int main()
 
     Можно использовать такую функцю загрузки:
     i = Номер Мипмапы
-    glCompressedTexImage2D(GL_TEXTURE_2D, i, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, img.getWidth(i), img.getHeight(i), 0, img.getSize(i), img.getData(i));
-    Вместо GL_COMPRESSED_RGBA_S3TC_DXT1_EXT указать тип сжатия из класса GLuint compressionType;
+    glCompressedTexImage2D(GL_TEXTURE_2D, i, img.getCompressionType(), img.getWidth(i), img.getHeight(i), 0, img.getSize(i), img.getData(i));
     */
 }
