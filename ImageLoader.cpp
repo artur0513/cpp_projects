@@ -179,11 +179,11 @@ public:
         mipMaps[0].size = header.dwPitchOrLinearSize;
 
 
-        if (header.ddspf.dwFourCC[0] = 'D', header.ddspf.dwFourCC[1] = 'X', header.ddspf.dwFourCC[2] = 'T', header.ddspf.dwFourCC[3] = '1') // DXT1 check
+        if (header.ddspf.dwFourCC[0] == 'D' && header.ddspf.dwFourCC[1] == 'X' && header.ddspf.dwFourCC[2] == 'T' && header.ddspf.dwFourCC[3] == '1') // DXT1 check
             compressionType = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-        else if (header.ddspf.dwFourCC[0] = 'D', header.ddspf.dwFourCC[1] = 'X', header.ddspf.dwFourCC[2] = 'T', header.ddspf.dwFourCC[3] = '3') // DXT3 check
+        else if (header.ddspf.dwFourCC[0] == 'D' && header.ddspf.dwFourCC[1] == 'X' && header.ddspf.dwFourCC[2] == 'T' && header.ddspf.dwFourCC[3] == '3') // DXT3 check
             compressionType = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-        else if (header.ddspf.dwFourCC[0] = 'D', header.ddspf.dwFourCC[1] = 'X', header.ddspf.dwFourCC[2] = 'T', header.ddspf.dwFourCC[3] = '5') // DXT5 check
+        else if (header.ddspf.dwFourCC[0] == 'D' && header.ddspf.dwFourCC[1] == 'X' && header.ddspf.dwFourCC[2] == 'T' && header.ddspf.dwFourCC[3] == '5') // DXT5 check
             compressionType = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         else {
             std::cerr << "Unsupported DDS compression type. Supported are DXT1, DXT3, DXT5: " << filename << "\n";
