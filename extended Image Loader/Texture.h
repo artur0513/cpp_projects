@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -93,7 +93,7 @@ public:
     [[nodiscard]] bool loadFromFile(std::string filename) override;
 };
 
-// Думаю нужно больше тестов, но в целом вроде работает
+// Р”СѓРјР°СЋ РЅСѓР¶РЅРѕ Р±РѕР»СЊС€Рµ С‚РµСЃС‚РѕРІ, РЅРѕ РІ С†РµР»РѕРј РІСЂРѕРґРµ СЂР°Р±РѕС‚Р°РµС‚
 class Texture {
 private:
     static std::map<std::string, GLuint> allTextures;
@@ -104,7 +104,7 @@ private:
     // texture size, is repeated, maybe other variables + functions
 
 public:
-    GLuint loadFromFile(std::string filename); // Возвращает id текстуры в случае успеха, либо 0 в случае ошибки
+    GLuint loadFromFile(std::string filename); // Р’РѕР·РІСЂР°С‰Р°РµС‚ id С‚РµРєСЃС‚СѓСЂС‹ РІ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС…Р°, Р»РёР±Рѕ 0 РІ СЃР»СѓС‡Р°Рµ РѕС€РёР±РєРё
 
     // generate mip map function
 

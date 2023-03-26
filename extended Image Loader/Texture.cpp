@@ -1,4 +1,4 @@
-#include "Texture.h"
+ï»¿#include "Texture.h"
 #include <filesystem>
 
 uint32_t TGAImage::getWidth(int mipMapLevel) { return mipMaps[0].width; }
@@ -149,16 +149,16 @@ bool DDSImage::loadFromFile(std::string filename) {
 std::map<std::string, GLuint> Texture::allTextures;
 
 GLuint Texture::loadFromFile(std::string filename) {
-    filename = std::filesystem::relative(filename).string(); // Ïðèâîäì íàçâàíèå ôàéëà ê åäèíîìó âèäó
+    filename = std::filesystem::relative(filename).string(); // ÐŸÑ€Ð¸Ð²Ð¾Ð´Ð¼ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸Ðµ Ñ„Ð°Ð¹Ð»Ð° Ðº ÐµÐ´Ð¸Ð½Ð¾Ð¼Ñƒ Ð²Ð¸Ð´Ñƒ
     auto tex = allTextures.find(filename);
 
-    if (tex != allTextures.end()) { // Åñëè íóæíàÿ òåêñòóðà óæå çàãðóæåíà, òî áåðåì åå id
+    if (tex != allTextures.end()) { // Ð•ÑÐ»Ð¸ Ð½ÑƒÐ¶Ð½Ð°Ñ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ð° ÑƒÐ¶Ðµ Ð·Ð°Ð³Ñ€ÑƒÐ¶ÐµÐ½Ð°, Ñ‚Ð¾ Ð±ÐµÑ€ÐµÐ¼ ÐµÐµ id
         id = tex->second;
         return id;
     }
     
-    // Òåïåðü, åñëè òåêñòóðó åùå íå çàãðóçèëè
-    std::string ext = filename.substr(filename.rfind(".")); // Áåðåì ðàñøèðåíèå ôàéëà
+    // Ð¢ÐµÐ¿ÐµÑ€ÑŒ, ÐµÑÐ»Ð¸ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñƒ ÐµÑ‰Ðµ Ð½Ðµ Ð·Ð°Ð³Ñ€ÑƒÐ·Ð¸Ð»Ð¸
+    std::string ext = filename.substr(filename.rfind(".")); // Ð‘ÐµÑ€ÐµÐ¼ Ñ€Ð°ÑÑˆÐ¸Ñ€ÐµÐ½Ð¸Ðµ Ñ„Ð°Ð¹Ð»Ð°
 
     Image* img;
     if (ext == ".dds") {
@@ -181,20 +181,20 @@ GLuint Texture::loadFromFile(std::string filename) {
         return 0;
     }
 
-    // Åñëè äîøëè äî ñþäà, òî çíà÷èò â img çàãðóæåíà òåêñòóðà
+    // Ð•ÑÐ»Ð¸ Ð´Ð¾ÑˆÐ»Ð¸ Ð´Ð¾ ÑÑŽÐ´Ð°, Ñ‚Ð¾ Ð·Ð½Ð°Ñ‡Ð¸Ñ‚ Ð² img Ð·Ð°Ð³Ñ€ÑƒÐ¶ÐµÐ½Ð° Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ð°
     
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
 
-    // Óñòàíîâêà ïàðàìåòðîâ íàëîæåíèÿ òåêñòóðû
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // óñòàíîâêà ìåòîäà íàëîæåíèÿ òåêñòóðû GL_REPEAT (ñòàíäàðòíûé ìåòîä íàëîæåíèÿ)
+    // Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð² Ð½Ð°Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñ‹
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð¼ÐµÑ‚Ð¾Ð´Ð° Ð½Ð°Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñ‹ GL_REPEAT (ÑÑ‚Ð°Ð½Ð´Ð°Ñ€Ñ‚Ð½Ñ‹Ð¹ Ð¼ÐµÑ‚Ð¾Ð´ Ð½Ð°Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // Óñòàíîâêà ïàðàìåòðîâ ôèëüòðàöèè òåêñòóðû
+    // Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð² Ñ„Ð¸Ð»ÑŒÑ‚Ñ€Ð°Ñ†Ð¸Ð¸ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñ‹
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // Åñëè òèï ñæàòèÿ = 0, ò.å. áåç ñæàòèÿ òî èñïîëüçóåì îäíó ôóíêöèþ, èíà÷å äðóãóþ + ãðóçèì âñå ìèïìàïû
+    // Ð•ÑÐ»Ð¸ Ñ‚Ð¸Ð¿ ÑÐ¶Ð°Ñ‚Ð¸Ñ = 0, Ñ‚.Ðµ. Ð±ÐµÐ· ÑÐ¶Ð°Ñ‚Ð¸Ñ Ñ‚Ð¾ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÐ¼ Ð¾Ð´Ð½Ñƒ Ñ„ÑƒÐ½ÐºÑ†Ð¸ÑŽ, Ð¸Ð½Ð°Ñ‡Ðµ Ð´Ñ€ÑƒÐ³ÑƒÑŽ + Ð³Ñ€ÑƒÐ·Ð¸Ð¼ Ð²ÑÐµ Ð¼Ð¸Ð¿Ð¼Ð°Ð¿Ñ‹
     if (img->getCompressionType() != 0)
         for (uint32_t i = 0; i < img->getMipMapCount(); i++)
             glCompressedTexImage2D(GL_TEXTURE_2D, i, img->getCompressionType(), img->getWidth(i), img->getHeight(i), 0, img->getSize(i), img->getData(i));
