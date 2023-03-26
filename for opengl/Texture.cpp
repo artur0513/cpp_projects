@@ -116,11 +116,11 @@ bool DDSImage::loadFromFile(std::string filename) {
     mipMaps.resize(mipMapCount);
 
     std::string type_str(header.ddspf.dwFourCC);
-    if (type_str == "DXT1") // DXT1 check
+    if (type_str == "DXT1")
         compressionType = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-    else if (type_str == "DXT3") // DXT3 check
+    else if (type_str == "DXT3")
         compressionType = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-    else if (type_str == "DXT5") // DXT5 check
+    else if (type_str == "DXT5")
         compressionType = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
     else {
         std::cerr << "Unsupported DDS compression type. Supported are DXT1, DXT3, DXT5: " << filename << "\n";
@@ -146,18 +146,12 @@ bool DDSImage::loadFromFile(std::string filename) {
     return true;
 }
 
-std::map<std::string, GLuint> Texture::allTextures;
+Texture::Texture(std::string filename) {
+    loadFromFile(filename);
+}
 
 GLuint Texture::loadFromFile(std::string filename) {
     filename = std::filesystem::relative(filename).string(); // Приводм название файла к единому виду
-    auto tex = allTextures.find(filename);
-
-    if (tex != allTextures.end()) { // Если нужная текстура уже загружена, то берем ее id
-        id = tex->second;
-        return id;
-    }
-    
-    // Теперь, если текстуру еще не загрузили
     std::string ext = filename.substr(filename.rfind(".")); // Берем расширение файла
 
     Image* img;
@@ -182,12 +176,11 @@ GLuint Texture::loadFromFile(std::string filename) {
     }
 
     // Если дошли до сюда, то значит в img загружена текстура
-    
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
 
     // Установка параметров наложения текстуры
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // установка метода наложения текстуры GL_REPEAT (стандартный метод наложения)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // Установка параметров фильтрации текстуры
@@ -202,6 +195,27 @@ GLuint Texture::loadFromFile(std::string filename) {
         for (uint32_t i = 0; i < img->getMipMapCount(); i++)
             glTexImage2D(GL_TEXTURE_2D, 0, img->isRGBA() ? GL_RGBA : GL_RGB, img->getWidth(), img->getHeight(), 0, img->isRGBA() ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, img->getData());
 
-    allTextures.insert(std::pair<std::string, GLuint>(filename, id));
+    hasMipMap = (img->getMipMapCount() > 0); // Сохраняем необходимые данные
+    name = filename;
+    width = img->getWidth();
+    height = img->getHeight();
+
+    delete img;
     return id;
+}
+
+void Texture::bind(GLenum texture) {
+    glActiveTexture(texture);
+    glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Texture::generateMipMap() {
+    if (!hasMipMap) {
+        glGenerateTextureMipmap(id);
+        hasMipMap = true;
+    }
+}
+
+Texture::~Texture() {
+    glDeleteTextures(1, &id);
 }

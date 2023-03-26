@@ -93,21 +93,23 @@ public:
     [[nodiscard]] bool loadFromFile(std::string filename) override;
 };
 
-// Думаю нужно больше тестов, но в целом вроде работает
+/* Думаю нужно больше тестов, но в целом вроде работает
+Из класса убрал map<string, GLuint> allTextures, поскольку есть 
+вопросы касательно работы удаления текстур:
+Его бы сделать на основе механизма подсчета владельцев или что то такое, хз
+Но при этом стоит оставить возможность создавать просто копии текстуры */
 class Texture {
-private:
-    static std::map<std::string, GLuint> allTextures;
+protected:
     GLuint id;
 
-    //bool hasMipMap;
-
-    // texture size, is repeated, maybe other variables + functions
-
-public:
+    bool hasMipMap = false;
+    std::string name;
+    uint32_t height, width;
     GLuint loadFromFile(std::string filename); // Возвращает id текстуры в случае успеха, либо 0 в случае ошибки
-
-    // generate mip map function
-
-    // bind texture function ? 
+public:
+    Texture(std::string filename);
+    void bind(GLenum texture = GL_TEXTURE0);
+    void generateMipMap();
+    ~Texture();
 };
 
