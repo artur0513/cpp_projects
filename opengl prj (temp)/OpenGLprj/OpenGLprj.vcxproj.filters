@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков\3dMath">
+      <UniqueIdentifier>{690a89d4-9e2e-48ba-944e-3008371806f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\resourceLoader">
+      <UniqueIdentifier>{e23f378e-72b3-4656-b202-9f1520a88c4f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpenGLprj.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="3dMath\3dMath.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3dMath\3dMath.h">
+      <Filter>Файлы заголовков\3dMath</Filter>
+    </ClInclude>
+    <ClInclude Include="3dMath\mat4.h">
+      <Filter>Файлы заголовков\3dMath</Filter>
+    </ClInclude>
+    <ClInclude Include="3dMath\quat.h">
+      <Filter>Файлы заголовков\3dMath</Filter>
+    </ClInclude>
+    <ClInclude Include="3dMath\vec2.h">
+      <Filter>Файлы заголовков\3dMath</Filter>
+    </ClInclude>
+    <ClInclude Include="3dMath\vec3.h">
+      <Filter>Файлы заголовков\3dMath</Filter>
+    </ClInclude>
+    <ClInclude Include="3dMath\vec4.h">
+      <Filter>Файлы заголовков\3dMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Файлы заголовков\resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Файлы заголовков\resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Файлы заголовков\resourceLoader</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
