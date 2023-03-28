@@ -79,11 +79,12 @@ GLint Shader::getUniformLocation(const std::string& name) {
     if (location != -1)
         uniforms.insert(std::pair<std::string, GLint>(name, location));
 
+    std::cout << "location: " << location << "\n";
     return location;
 }
 
-void Shader::setUniform(const std::string& name, int& v) { glUniform1i(getUniformLocation(name), v); }
-void Shader::setUniform(const std::string& name, float& v) { glUniform1f(getUniformLocation(name), v); }
+void Shader::setUniform(const std::string& name, int v) { glUniform1i(getUniformLocation(name), v); }
+void Shader::setUniform(const std::string& name, float v) { glUniform1f(getUniformLocation(name), v); }
 void Shader::setUniform(const std::string& name, Texture& v) { glUniform1i(getUniformLocation(name), v.getId()); }
 void Shader::setUniform(const std::string& name, m3d::vec2f& v) { glUniform2f(getUniformLocation(name), v.x, v.y); }
 void Shader::setUniform(const std::string& name, m3d::vec3f& v) { glUniform3f(getUniformLocation(name), v.x, v.y, v.z); }

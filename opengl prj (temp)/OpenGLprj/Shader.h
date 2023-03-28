@@ -7,6 +7,7 @@
 #include <map>
 #include <glew.h>
 
+// Шейдер вроде бы работает как надо
 class Shader {
 private:
 	std::map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
@@ -17,8 +18,8 @@ public:
 	GLuint loadFromFile(const std::string& vertexPath, const std::string& fragmentPath);
 	void use();
 
-	void setUniform(const std::string& name, int& v);
-	void setUniform(const std::string& name, float& v);
+	void setUniform(const std::string& name, int v);
+	void setUniform(const std::string& name, float v);
 	void setUniform(const std::string& name, Texture& v);
 	void setUniform(const std::string& name, m3d::vec2f& v);
 	void setUniform(const std::string& name, m3d::vec3f& v);

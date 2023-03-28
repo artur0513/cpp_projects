@@ -1,21 +1,2 @@
-﻿  Mesh.cpp
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(7,9): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
-          with
-          [
-              T=int
-          ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(9,1): message : во время компиляции функции-члена класс шаблон "m3d::vec3<int>::vec3(void)"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(121,24): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::vec3<int>::vec3(void)"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(42,53): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::vec3<int>"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(7,18): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
-          with
-          [
-              T=int
-          ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(7,27): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
-          with
-          [
-              T=int
-          ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(129): warning C4715: OBJMesh::loadFromFile: значение возвращается не при всех путях выполнения
+﻿  OpenGLprj.cpp
   OpenGLprj.vcxproj -> C:\Users\artur\Desktop\Артур\OpenGLprj\x64\Debug\OpenGLprj.exe

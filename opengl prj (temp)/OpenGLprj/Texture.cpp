@@ -6,7 +6,7 @@ uint32_t TGAImage::getHeight(int mipMapLevel) { return mipMaps[0].height; }
 uint32_t TGAImage::getSize(int mipMapLevel) { return mipMaps[0].size; }
 bool TGAImage::isRGBA() { return bytesPerPixel == 4; }
 GLuint TGAImage::getCompressionType() { return 0; }
-uint32_t TGAImage::getMipMapCount() { return 0; }
+uint32_t TGAImage::getMipMapCount() { return 1; }
 const uint8_t* TGAImage::getData(int mipMapLevel) { return mipMaps[0].pixels.data(); }
 
 bool TGAImage::loadFromFile(std::string filename) {
@@ -203,7 +203,7 @@ GLuint Texture::loadFromFile(std::string filename) {
             glCompressedTexImage2D(GL_TEXTURE_2D, i, img->getCompressionType(), img->getWidth(i), img->getHeight(i), 0, img->getSize(i), img->getData(i));
     else 
         for (uint32_t i = 0; i < img->getMipMapCount(); i++)
-            glTexImage2D(GL_TEXTURE_2D, 0, img->isRGBA() ? GL_RGBA : GL_RGB, img->getWidth(), img->getHeight(), 0, img->isRGBA() ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, img->getData());
+            glTexImage2D(GL_TEXTURE_2D, i, img->isRGBA() ? GL_RGBA : GL_RGB, img->getWidth(i), img->getHeight(i), 0, img->isRGBA() ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, img->getData(i));
 
     hasMipMap = (img->getMipMapCount() > 0); // Сохраняем необходимые данные
     name = filename;

@@ -26,7 +26,7 @@ void OBJMesh::parseFaceLine(std::string line, m3d::vec3i& face, m3d::vec3i& tex,
     while (end != std::string::npos && i < 9) {
         if (end - start > 0) {
             try {
-                numbers[i] = std::stoi(line.substr(start, end - start));
+                numbers[i] = std::stoi(line.substr(start, end - start)) - 1;
                 i++;
             }
             catch (std::invalid_argument) {};
@@ -35,7 +35,7 @@ void OBJMesh::parseFaceLine(std::string line, m3d::vec3i& face, m3d::vec3i& tex,
         end = line.find_first_of("/ ", start);
     }
     try {
-        numbers[i] = std::stoi(line.substr(start));
+        numbers[i] = std::stoi(line.substr(start)) - 1;
         i++;
     }
     catch (std::invalid_argument) {};
@@ -188,6 +188,7 @@ GLuint OBJMesh::passToGPU() {
         0, 1, 3, // первый треугольник
         1, 2, 3  // второй треугольник
     };
+    */
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -195,22 +196,30 @@ GLuint OBJMesh::passToGPU() {
 
     glBindVertexArray(VAO);
 
+    /*
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(geomVertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m3d::vec3f) * geomVertices.size(), geomVertices.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m3d::vec3i) * meshParts[0].faces.size(), meshParts[0].faces.data(), GL_STATIC_DRAW);
 
     // Координатные атрибуты
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 	
     // Цветовые атрибуты
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    //glEnableVertexAttribArray(1);
 	
     // Атрибуты текстурных координат
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    */
+    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    //glEnableVertexAttribArray(2);
+    
+    return VAO;
 }
