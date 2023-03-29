@@ -228,6 +228,10 @@ void Texture::generateMipMap() {
 
 GLuint Texture::getId() { return id; }
 
+const std::string& Texture::getName() {
+    return name;
+}
+
 Texture::~Texture() {
     glDeleteTextures(1, &id);
 }

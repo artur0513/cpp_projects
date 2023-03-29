@@ -110,6 +110,7 @@ public:
     GLuint getId();
     void bind(GLenum texture = GL_TEXTURE0);
     void generateMipMap();
+    const std::string& getName();
     ~Texture();
 };
 

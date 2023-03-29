@@ -3,6 +3,7 @@
 #include <glfw3.h>
 #include "Mesh.h"
 #include "Shader.h"
+#include <chrono>
 
 void error_callback(int error, const char* description)
 {
@@ -57,26 +58,29 @@ int main()
     Texture texture;
     texture.loadFromFile("forTests/test.tga");
 
-    texture.bind(GL_TEXTURE3);
-    shader.use();
-    shader.setUniform("texture1", 3); // SUKA, сюда надо ставить не идентификатор текстуры, а эту хрень 
-    //The uniform value for a sampler refers to the texture unit, not the texture id.
-    //shader.setUniform("texture1", i) ===> texture.bind(GL_TEXTUREi);
-    // Но при этом если shader.setUniform("texture1", 0) 0 ставить, то биндить можно вообще как угодно?
+    Texture trollface;
+    trollface.loadFromFile("forTests/trollface.tga");
 
+    shader.use();
+    shader.setUniform("texture1", texture);
+    shader.setUniform("texture2", trollface);
+
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.3f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        texture.bind(GL_TEXTURE3);
-
         shader.use();
+        shader.setUniform("mixcoeff", std::sin(float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f));
+        shader.bindTextures();
+
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    shader.printInfo();
 }
 

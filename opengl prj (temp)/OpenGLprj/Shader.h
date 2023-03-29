@@ -10,12 +10,18 @@
 // Шейдер вроде бы работает как надо
 class Shader {
 private:
+	std::string vertexPath, fragmentPath;
 	std::map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
+	std::map<GLint, Texture*> textureTable; // Таблица со всеми текстурами, которые будут передаваться в uniform-ы в функции bindTextures()
 	GLuint id = 0;
+
+	GLint getMaxTextureUnits();
 
 	GLint getUniformLocation(const std::string& name);
 public:
-	GLuint loadFromFile(const std::string& vertexPath, const std::string& fragmentPath);
+	GLint maxTextureUnits = getMaxTextureUnits();
+
+	GLuint loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath);
 	void use();
 
 	void setUniform(const std::string& name, int v);
@@ -26,6 +32,10 @@ public:
 	void setUniform(const std::string& name, m3d::vec4f& v);
 	void setUniform(const std::string& name, m3d::mat4f& v);
 	//add more uniforms if needed
+
+	void bindTextures();
+
+	void printInfo();
 
 	~Shader();
 };
