@@ -1,4 +1,5 @@
-#include "Mesh.h"
+п»ї#include "Mesh.h"
+#include <unordered_set>
 
 std::vector<float> OBJMesh::parseCoordLine(std::string line) { // works OK!
     size_t i = 0;
@@ -17,10 +18,10 @@ std::vector<float> OBJMesh::parseCoordLine(std::string line) { // works OK!
     return numbers;
 }
 
-void OBJMesh::parseFaceLine(std::string line, m3d::vec3i& face, m3d::vec3i& tex, m3d::vec3i& normal) {
-    // Бля, сделать по нормальному, че за кал, можно же в линию все хранить, смотри passToGPU, которой тут вообще не должно быть
+void OBJMesh::parseFaceLine(std::string line, OBJMeshPart& p) {
+    // Р‘Р»СЏ, СЃРґРµР»Р°С‚СЊ РїРѕ РЅРѕСЂРјР°Р»СЊРЅРѕРјСѓ, С‡Рµ Р·Р° РєР°Р», РјРѕР¶РЅРѕ Р¶Рµ РІ Р»РёРЅРёСЋ РІСЃРµ С…СЂР°РЅРёС‚СЊ, СЃРјРѕС‚СЂРё passToGPU, РєРѕС‚РѕСЂРѕР№ С‚СѓС‚ РІРѕРѕР±С‰Рµ РЅРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ
 
-    int numbers[9];
+    unsigned numbers[9];
     size_t start = 0, end = line.find_first_of("/ "), i = 0;
 
     while (end != std::string::npos && i < 9) {
@@ -38,23 +39,19 @@ void OBJMesh::parseFaceLine(std::string line, m3d::vec3i& face, m3d::vec3i& tex,
         numbers[i] = std::stoi(line.substr(start)) - 1;
         i++;
     }
-    catch (std::invalid_argument) {};
+    catch (std::invalid_argument) {};    
     
     if (hasVertexNormales && hasTextureVertices) {
-        face = { numbers[0], numbers[3], numbers[6] };
-        tex = { numbers[1], numbers[4], numbers[7] };
-        normal = { numbers[2], numbers[5], numbers[8] };
+        p.indices.insert(p.indices.end(), { OBJIndex(numbers[0], numbers[1], numbers[2] ), OBJIndex(numbers[3], numbers[4], numbers[5]), OBJIndex(numbers[6], numbers[7], numbers[8]) });
     }
     else if (hasVertexNormales && !hasTextureVertices) {
-        face = { numbers[0], numbers[2], numbers[4] };
-        normal = { numbers[1], numbers[3], numbers[5] };
+        p.indices.insert(p.indices.end(), { OBJIndex(numbers[0], 0, numbers[1]), OBJIndex(numbers[2], 0, numbers[3]), OBJIndex(numbers[4], 0, numbers[5]) });
     }
     else if (!hasVertexNormales && hasTextureVertices) {
-        face = { numbers[0], numbers[2], numbers[4] };
-        tex = { numbers[1], numbers[3], numbers[5] };
+        p.indices.insert(p.indices.end(), { OBJIndex(numbers[0], numbers[1], 0), OBJIndex(numbers[2], numbers[3], 0), OBJIndex(numbers[4], numbers[5], 0) });
     }
     else {
-        face = { numbers[0], numbers[1], numbers[2] };
+        p.indices.insert(p.indices.end(), { OBJIndex(numbers[0], 0, 0), OBJIndex(numbers[1], 0, 0), OBJIndex(numbers[2],0, 0) });
     }
 }
 
@@ -73,7 +70,8 @@ std::string OBJMesh::getLineName(std::string& line) { // works OK!
 
 std::string& OBJMesh::getObjectName() { return objectName; }
 
-bool OBJMesh::loadFromFile(std::string filename) {
+bool OBJMesh::loadFromFile(std::string _filename) {
+    filename = _filename;
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Can`t open file and load mesh: " << filename << "\n";
@@ -120,17 +118,14 @@ bool OBJMesh::loadFromFile(std::string filename) {
                 meshParts.push_back(OBJMeshPart());
             }
 
-            m3d::vec3i face, tex, normal;
-            parseFaceLine(line, face, tex, normal);
-            (meshParts.end() - 1)->faces.push_back(face);
-            (meshParts.end() - 1)->textureCoords.push_back(tex);
-            (meshParts.end() - 1)->normals.push_back(normal);
+            parseFaceLine(line, *(meshParts.end()  - 1));
         }
 
     }
 }
 
 void OBJMesh::printInfo() {
+    std::cout << "Filename: " << filename << "\n";
     std::cout << "Object name: " << objectName << "  Material file: " << mtllibFile << "\n";
     std::cout << "hasVertexNormales: " << hasVertexNormales << "  hasTextureVertices: " << hasTextureVertices << "\n";
 
@@ -155,40 +150,59 @@ void OBJMesh::printInfo() {
         std::cout << "   hasMaterial: " << p.hasMaterial << "\n";
         std::cout << "   materialName: " << p.materialName << "\n";
 
-        std::cout << "   faces: " << "\n";
-        for (auto& v : p.faces)
-            std::cout << "   " << v << "\n";
-
-        if (hasTextureVertices) {
-            std::cout << "   textureVertices: " << "\n";
-            for (auto& v : p.textureCoords)
-                std::cout << "   " << v << "\n";
-        }
-
-        if (hasVertexNormales) {
-            std::cout << "   vertexNormals: " << "\n";
-            for (auto& v : p.normals)
-                std::cout << "   " << v << "\n";
-        }
+        std::cout << "   indices: " << "\n";
+        for (auto& v : p.indices)
+            std::cout << "   " << v.vertexNum << " " << v.textureNum << " " << v.normalNum << "\n";
         std::cout << std::endl;
     }
 }
 
 GLuint OBJMesh::passToGPU() {
-    /*
-    // Указание вершин (и буфера(ов)) и настройка вершинных атрибутов
-    float vertices[] = {
-         // координаты        // цвета            // текстурные координаты
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // верхняя правая вершина
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // нижняя правая вершина
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // нижняя левая вершина
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // верхняя левая вершина 
+    // Р¤РѕСЂРјР°С‚ - РєРѕРѕСЂРґРёРЅР°С‚С‹, С‚РµРєСЃС‚СѓСЂРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹, РЅРѕСЂРјР°Р»Рё
+    std::vector<Vertex> vertices;
+    std::vector<unsigned> indices;
+
+    auto hash = [](const OBJIndex& x) {
+        return (size_t)0;
     };
-    unsigned int indices[] = {
-        0, 1, 3, // первый треугольник
-        1, 2, 3  // второй треугольник
+
+    auto equal = [](const OBJIndex& x, const OBJIndex& y) {
+        return (x.vertexNum == y.vertexNum && x.textureNum == y.textureNum && x.normalNum == y.normalNum);
     };
-    */
+
+    std::unordered_set<OBJIndex, decltype(hash), decltype(equal)> rawIndices;
+    //std::vector<size_t> meshPartsDelimiter;
+
+    for (auto& meshPart : meshParts) {
+        for (auto& index : meshPart.indices) {
+            rawIndices.insert(index);
+        }
+    }
+
+    //std::cout << "============================================\n";
+    for (auto& uniqueIndex : rawIndices) {
+        Vertex v;
+        v.pos = geomVertices[uniqueIndex.vertexNum];
+        if (hasTextureVertices)
+            v.texCoord = textureVertices[uniqueIndex.textureNum] * 65536.f;
+        if (hasVertexNormales) {
+            m3d::vec3f norm = m3d::normalize(vertexNormals[uniqueIndex.normalNum]);
+            v.normal = norm * 32767.f;
+        }
+        vertices.push_back(v);
+        //std::cout << v.pos << " " << v.texCoord << " " << v.normal << "\n";
+    }
+
+    for (auto& meshPart : meshParts) {
+        for (auto& index : meshPart.indices) {
+            indices.push_back(std::distance(rawIndices.begin(), rawIndices.find(index)));
+        }
+    }
+
+    //for (int i = 0; i < indices.size(); i += 3) {
+    //  std::cout << indices[i] << " " << indices[i + 1] << " " << indices[i + 2] << "\n";
+    //}
+
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -196,30 +210,28 @@ GLuint OBJMesh::passToGPU() {
 
     glBindVertexArray(VAO);
 
-    /*
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(geomVertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(m3d::vec3f) * geomVertices.size(), geomVertices.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m3d::vec3i) * meshParts[0].faces.size(), meshParts[0].faces.data(), GL_STATIC_DRAW);
-
-    // Координатные атрибуты
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // РљРѕРѕСЂРґРёРЅР°С‚РЅС‹Рµ Р°С‚СЂРёР±СѓС‚С‹
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
-	
-    // Цветовые атрибуты
-    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(1);
-	
-    // Атрибуты текстурных координат
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    //glEnableVertexAttribArray(2);
+
+    // РђС‚СЂРёР±СѓС‚С‹ С‚РµРєСЃС‚СѓСЂРЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚
+    glVertexAttribPointer(1, 2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(Vertex), (void*)(offsetof(Vertex, texCoord)));
+    glEnableVertexAttribArray(1);
+
+    // РќРѕСЂРјР°Р»Рё
+    glVertexAttribPointer(2, 3, GL_SHORT, GL_TRUE, sizeof(Vertex), (void*)(offsetof(Vertex, normal)));
+    glEnableVertexAttribArray(2);
+
+    geomVertices.clear();
+    textureVertices.clear();
+    vertexNormals.clear();
+    meshParts.clear();
     
     return VAO;
 }

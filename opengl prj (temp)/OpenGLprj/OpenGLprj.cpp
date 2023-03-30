@@ -65,7 +65,11 @@ int main()
     shader.setUniform("texture1", texture);
     shader.setUniform("texture2", trollface);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    checkGLError();
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.3f, 0.1f, 0.1f, 1.0f);
