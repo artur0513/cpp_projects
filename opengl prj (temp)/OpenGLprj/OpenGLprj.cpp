@@ -47,10 +47,8 @@ int main()
     }
     
     // Оно на удивление работает, пишем дальше загрузчик моделей
-    OBJMesh m;
+    OBJ::Mesh m;
     m.loadFromFile("forTests/2.obj");
-    m.printInfo();
-    auto vao = m.passToGPU();
 
     Shader shader;
     shader.loadFromFile("forTests/vertex.txt", "forTests/fragment.txt");
@@ -60,7 +58,7 @@ int main()
 
     Texture trollface;
     trollface.loadFromFile("forTests/trollface.tga");
-
+   
     shader.use();
     shader.setUniform("texture1", texture);
     shader.setUniform("texture2", trollface);
@@ -79,8 +77,9 @@ int main()
         shader.setUniform("mixcoeff", std::sin(float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f));
         shader.bindTextures();
 
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(m.VAO);
+        //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

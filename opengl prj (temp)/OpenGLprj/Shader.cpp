@@ -127,6 +127,10 @@ void Shader::setUniform(const std::string& name, Texture& v) {
         tableLocation->second = &v;
 }
 
+void Shader::setUniform(const std::string& name, Texture* v) {
+    setUniform(name, *v);
+}
+
 void Shader::bindTextures() {
     GLint index = 0;
     for (auto& t : textureTable) {

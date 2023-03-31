@@ -11,41 +11,44 @@ struct Vertex {
     m3d::vec3<GLshort> normal;
 };
 
-struct OBJIndex {
-    unsigned vertexNum = 0, textureNum = 0, normalNum = 0;
-};
+namespace OBJ {
+    struct Index {
+        unsigned vertexNum = 0, textureNum = 0, normalNum = 0;
+    };
 
-struct OBJMeshPart { // maybe move to obj class as private field
-    std::vector<OBJIndex> indices;
-    std::string materialName;
-    bool hasMaterial = false;
-};
+    struct MeshPart {
+        size_t firstIndex = 0, numOfIndices = 0;
+        std::string materialName;
+        bool hasMaterial = false;
+    };
 
-class OBJMesh {
-private:
-    std::string objectName, mtllibFile, filename;
+    class Mesh {
+    private:
+        std::string objectName, mtllibFile, filename;
 
-    std::vector<m3d::vec3f> geomVertices;
-    std::vector<m3d::vec2f> textureVertices;
-    std::vector<m3d::vec3f> vertexNormals;
+        // Следующие векторы хранят инфу в том виде, как она есть в исходном OBJ файле 
+        std::vector<m3d::vec3f> geomVertices;
+        std::vector<m3d::vec2f> textureVertices;
+        std::vector<m3d::vec3f> vertexNormals;
+        std::vector<Index> indices;
+        
+        // Следующие векторы хранят инфу в том виде, в котором будут отправлены видеокарте
+        std::vector<MeshPart> meshParts; // Тут нужно разделение на обьекты и их части
+        std::vector<Vertex> VBOvertices;
+        std::vector<unsigned> EBOindices;
 
-    std::vector<OBJMeshPart> meshParts;
+        bool hasVertexNormales = false;
+        bool hasTextureVertices = false;
 
-    bool hasVertexNormales = false;
-    bool hasTextureVertices = false;
+        std::vector<float> parseCoordLine(std::string line);
+        void parseFaceLine(std::string line);
+        std::string getLineName(std::string& line);
+        void passToGPU();
+    public:
+        unsigned VBO, VAO, EBO;
+        std::string& getObjectName();
+        bool loadFromFile(std::string filename);
+        ~Mesh();
+    };
 
-    std::vector<float> parseCoordLine(std::string line);
-
-    void parseFaceLine(std::string line, OBJMeshPart& p);
-
-    std::string getLineName(std::string& line);
-
-public:
-    std::string& getObjectName();
-
-    bool loadFromFile(std::string filename);
-
-    GLuint passToGPU();
-
-    void printInfo();
-};
+}

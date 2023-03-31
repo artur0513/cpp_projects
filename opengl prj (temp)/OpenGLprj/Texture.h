@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <glew.h>
 
 class Image {
@@ -93,18 +93,13 @@ public:
     [[nodiscard]] bool loadFromFile(std::string filename) override;
 };
 
-/* Думаю нужно больше тестов, но в целом вроде работает
-Из класса убрал map<string, GLuint> allTextures, поскольку есть 
-вопросы касательно работы удаления текстур:
-Его бы сделать на основе механизма подсчета владельцев или что то такое, хз
-Но при этом стоит оставить возможность создавать просто копии текстуры */
 class Texture {
 protected:
     GLuint id = 0;
 
     bool hasMipMap = false;
     std::string name;
-    uint32_t height, width;
+    uint32_t height = 0, width = 0;
 public:
     GLuint loadFromFile(std::string filename); // Возвращает id текстуры в случае успеха, либо 0 в случае ошибки
     GLuint getId();
@@ -113,4 +108,3 @@ public:
     const std::string& getName();
     ~Texture();
 };
-

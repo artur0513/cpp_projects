@@ -226,7 +226,9 @@ void Texture::generateMipMap() {
     }
 }
 
-GLuint Texture::getId() { return id; }
+GLuint Texture::getId() {
+    return id;
+}
 
 const std::string& Texture::getName() {
     return name;
