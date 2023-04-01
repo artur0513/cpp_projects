@@ -1,0 +1,38 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl mtl_tubes3b_S
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\mtl\\mtl_tubes3b.dds
+map_d C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\mtl\\mtl_tubes3b.dds
+
+newmtl prop_pult4_S
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds
+map_d C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds
+
+newmtl prop_pult4_S1
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds
+map_d C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds

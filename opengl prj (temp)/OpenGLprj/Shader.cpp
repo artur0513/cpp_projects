@@ -70,6 +70,10 @@ GLuint Shader::loadFromFile(const std::string& _vertexPath, const std::string& _
     return id;
 }
 
+GLuint Shader::getId() {
+    return id;
+}
+
 void Shader::use() { glUseProgram(id); }
 
 GLint Shader::getUniformLocation(const std::string& name) {
@@ -112,7 +116,7 @@ void Shader::setUniform(const std::string& name, m3d::vec4f& v) {
 
 void Shader::setUniform(const std::string& name, m3d::mat4f& v) {
     assert(textureTable.find(getUniformLocation(name)) == textureTable.end());
-    glUniformMatrix4fv(getUniformLocation(name), 16, GL_TRUE, v());
+    glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, v());
 }
 
 void Shader::setUniform(const std::string& name, Texture& v) { 

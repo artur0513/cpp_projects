@@ -20,6 +20,7 @@ private:
 public:
 	GLint maxTextureUnits = getMaxTextureUnits();
 	GLuint loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath);
+	GLuint getId();
 	void use();
 
 	void setUniform(const std::string& name, int v);

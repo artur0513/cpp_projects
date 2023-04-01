@@ -33,7 +33,6 @@ namespace OBJ {
         std::vector<Index> indices;
         
         // Следующие векторы хранят инфу в том виде, в котором будут отправлены видеокарте
-        std::vector<MeshPart> meshParts; // Тут нужно разделение на обьекты и их части
         std::vector<Vertex> VBOvertices;
         std::vector<unsigned> EBOindices;
 
@@ -45,6 +44,8 @@ namespace OBJ {
         std::string getLineName(std::string& line);
         void passToGPU();
     public:
+        std::vector<MeshPart> meshParts; // Тут нужно разделение на обьекты и их части
+
         unsigned VBO, VAO, EBO;
         std::string& getObjectName();
         bool loadFromFile(std::string filename);

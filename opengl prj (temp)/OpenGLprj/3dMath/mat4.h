@@ -94,43 +94,46 @@ namespace m3d {
 		template <class T>
 		friend vec4<T> operator*(const vec4<T>& l, const mat4<T>& r);
 
+		template <class T>
+		friend vec4<T> operator*(const mat4<T>& l, const vec4<T>& r);
+
 		mat4<T>& init_identity() {
-			data[0] = 1; data[4] = 0; data[8] = 0; data[12] = 0;
-			data[1] = 0; data[5] = 1; data[9] = 0; data[13] = 0;
-			data[2] = 0; data[6] = 0; data[10] = 1; data[14] = 0;
-			data[3] = 0; data[7] = 0; data[11] = 0; data[15] = 1;
+			data[0] = 1.0; data[4] = 0;   data[8] = 0;    data[12] = 0;
+			data[1] = 0;   data[5] = 1.0; data[9] = 0;    data[13] = 0;
+			data[2] = 0;   data[6] = 0;   data[10] = 1.0; data[14] = 0;
+			data[3] = 0;   data[7] = 0;   data[11] = 0;   data[15] = 1.0;
 			return *this;
 		}
 
-		mat4<T>& init_perspective(const PersProjInfo& p) {
-			data[0] = 1.0 / tan(p.fov_y / 2) / p.aspect_ratio; data[4] = 0.0; data[8] = 0.0; data[12] = 0.0;
-			data[1] = 0.0; data[5] = 1.0 / tan(p.fov_y / 2.0); data[9] = 0.0; data[13] = 0.0;
-			data[2] = 0.0; data[6] = 0.0; data[10] = (p.z_far + p.z_near) / (p.z_far - p.z_near); data[14] = 1.0;
-			data[3] = 0.0; data[7] = 0.0; data[11] = -2.0 * p.z_far * p.z_near / (p.z_far - p.z_near); data[15] = 0.0;
+		mat4<T>& init_perspective(const PersProjInfo& p) { // Смотрим вдоль Z
+			data[0] = 1.0 / tan(p.fov_y / 2) / p.aspect_ratio; data[4] = 0.0;  data[8] = 0.0; data[12] = 0.0;
+			data[1] = 0.0; data[5] = 1.0 / tan(p.fov_y / 2.0); data[9] = 0.0;  data[13] = 0.0;
+			data[2] = 0.0; data[6] = 0.0; data[10] = -(p.z_far + p.z_near) / (p.z_far - p.z_near); data[14] = 2.0 * p.z_far * p.z_near / (p.z_far - p.z_near);
+			data[3] = 0.0; data[7] = 0.0; data[11] = 1.0; data[15] = 0.0;
 			return *this;
 		}
 
 		mat4<T>& init_rotation_X(T angle) {
-			data[0] = 1.0; data[4] = 0.0;        data[8] = 0.0;         data[12] = 0.0;
+			data[0] = 1.0; data[4] = 0.0;             data[8] = 0.0;              data[12] = 0.0;
 			data[1] = 0.0; data[5] = std::cos(angle); data[9] = -std::sin(angle); data[13] = 0.0;
 			data[2] = 0.0; data[6] = std::sin(angle); data[10] = std::cos(angle); data[14] = 0.0;
-			data[3] = 0.0; data[7] = 0.0;        data[11] = 0.0;        data[15] = 1.0;
+			data[3] = 0.0; data[7] = 0.0;             data[11] = 0.0;             data[15] = 1.0;
 			return *this;
 		}
 
 		mat4<T>& init_rotation_Y(T angle) {
 			data[0] = std::cos(angle); data[4] = 0.0; data[8] = -std::sin(angle); data[12] = 0.0;
-			data[1] = 0.0;        data[5] = 1.0; data[9] = 0.0;         data[13] = 0.0;
+			data[1] = 0.0;             data[5] = 1.0; data[9] = 0.0;              data[13] = 0.0;
 			data[2] = std::sin(angle); data[6] = 0.0; data[10] = std::cos(angle); data[14] = 0.0;
-			data[3] = 0.0;        data[7] = 0.0; data[11] = 0.0;        data[15] = 1.0;
+			data[3] = 0.0;             data[7] = 0.0; data[11] = 0.0;             data[15] = 1.0;
 			return *this;
 		}
 
 		mat4<T>& init_rotation_Z(T angle) {
 			data[0] = std::cos(angle); data[4] = -std::sin(angle); data[8] = 0.0;  data[12] = 0.0;
 			data[1] = std::sin(angle); data[5] = std::cos(angle);  data[9] = 0.0;  data[13] = 0.0;
-			data[2] = 0.0;        data[6] = 0.0;         data[10] = 1.0; data[14] = 0.0;
-			data[3] = 0.0;        data[7] = 0.0;         data[11] = 0.0; data[15] = 1.0;
+			data[2] = 0.0;             data[6] = 0.0;              data[10] = 1.0; data[14] = 0.0;
+			data[3] = 0.0;             data[7] = 0.0;              data[11] = 0.0; data[15] = 1.0;
 			return *this;
 		}
 
@@ -204,4 +207,15 @@ namespace m3d {
 		return ret;
 	}
 
+	template <class T>
+	inline vec4<T> operator*(const mat4<T>& l, const vec4<T>& r) {
+		vec4<T> ret;
+
+		ret.x = r.x * l.data[0] + r.y * l.data[4] + r.z * l.data[8] + r.w * l.data[12];
+		ret.y = r.x * l.data[1] + r.y * l.data[5] + r.z * l.data[9] + r.w * l.data[13];
+		ret.z = r.x * l.data[2] + r.y * l.data[6] + r.z * l.data[10] + r.w * l.data[14];
+		ret.w = r.x * l.data[3] + r.y * l.data[7] + r.z * l.data[11] + r.w * l.data[15];
+
+		return ret;
+	}
 }

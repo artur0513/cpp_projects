@@ -1,0 +1,26 @@
+так работает кроме перевернутого з-буффера (и вообще з координаты, лол)
+m3d::mat4f matrix = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_transfer(0, 0, -0.7) * m3d::mat4f().init_rotation_X(time);
+в шейдере при передаче матрицы в униформу GL_TRUE
+матрица такая
+			data[0] = 1.0 / tan(p.fov_y / 2) / p.aspect_ratio; data[4] = 0.0;                      data[8] = 0.0;                                               data[12] = 0.0;
+			data[1] = 0.0;                                     data[5] = 1.0 / tan(p.fov_y / 2.0); data[9] = 0.0;                                               data[13] = 0.0;
+			data[2] = 0.0;                                     data[6] = 0.0;                      data[10] = -(p.z_far + p.z_near) / (p.z_far - p.z_near);      data[14] = -2.0 * p.z_far * p.z_near / (p.z_far - p.z_near);
+			data[3] = 0.0;                                     data[7] = 0.0;                      data[11] = -1.0; data[15] = 0.0;
+gl_Position = posn*matrix;
+
+далее, если gl_Position = matrix*posn; и GL_FALSE, то то-же самое, уже лучше
+
+далее, такая матрица фиксит з-буффер, но в целом все еще проблема с осью з
+data[0] = 1.0 / tan(p.fov_y / 2) / p.aspect_ratio; data[4] = 0.0;                      data[8] = 0.0;                                               data[12] = 0.0;
+data[1] = 0.0;                                     data[5] = 1.0 / tan(p.fov_y / 2.0); data[9] = 0.0;                                               data[13] = 0.0;
+data[2] = 0.0;                                     data[6] = 0.0;                      data[10] = -(p.z_far + p.z_near) / (p.z_far - p.z_near);      data[14] = -2.0 * p.z_far * p.z_near / (p.z_far - p.z_near);
+data[3] = 0.0;                                     data[7] = 0.0;                      data[11] = -1.0; data[15] = 0.0;
+я вроде должен двинуть куб вперед вдоль з чтобы он был виден, а по факты двигаю назад
+
+так вроде работает как надо
+ m3d::mat4f matrix = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_transfer(0, 0, 0.7) * m3d::mat4f().init_rotation_X(time);
+GL_FALSE
+data[0] = 1.0 / tan(p.fov_y / 2) / p.aspect_ratio; data[4] = 0.0;                      data[8] = 0.0;                                               data[12] = 0.0;
+data[1] = 0.0;                                     data[5] = 1.0 / tan(p.fov_y / 2.0); data[9] = 0.0;                                               data[13] = 0.0;
+data[2] = 0.0;                                     data[6] = 0.0;                      data[10] = -(p.z_far + p.z_near) / (p.z_far - p.z_near);      data[14] = 2.0 * p.z_far * p.z_near / (p.z_far - p.z_near);
+data[3] = 0.0;                                     data[7] = 0.0;                      data[11] = 1.0; data[15] = 0.0;

@@ -144,7 +144,7 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
             }
 
             parseFaceLine(line);
-            (meshParts.end() - 1)->numOfIndices++;
+            (meshParts.end() - 1)->numOfIndices += 3;
         }
 
     }
@@ -174,6 +174,7 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
             v.normal = norm * 32767.f;
         }
         VBOvertices.push_back(v);
+        std::cout << v.pos << "\n";
     }
 
     for (auto& index : indices) {
