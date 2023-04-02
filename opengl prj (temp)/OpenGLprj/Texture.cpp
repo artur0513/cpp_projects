@@ -237,3 +237,34 @@ const std::string& Texture::getName() {
 Texture::~Texture() {
     glDeleteTextures(1, &id);
 }
+
+TextureManager* TextureManager::getInstance() {
+    static TextureManager instance;
+    return &instance;
+}
+
+Texture* TextureManager::getTexture(std::string filename) {
+    filename = std::filesystem::relative(filename).string();
+    auto tex_iterator = textures.find(filename);
+
+    if (tex_iterator != textures.end())
+        return tex_iterator->second;
+
+    Texture* newTex = new Texture();
+    if (!newTex->loadFromFile(filename))
+        return nullptr;
+
+    textures.emplace(filename, newTex);
+    return newTex;
+}
+
+void TextureManager::printInfo() {
+    std::cout << "================ Texture Manager info ================\n";
+    for (auto& tex : textures)
+        std::cout << tex.first << "\n";
+}
+
+TextureManager::~TextureManager() {
+    for (auto& tex : textures)
+        delete tex.second; // Texture destructor will free gpu memory
+}

@@ -1,18 +1,21 @@
 ﻿#pragma once
 #include <string>
 #include "Texture.h"
+#include "Mesh.h"
 #include "3dMath/3dMath.h"
 #include <fstream>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <glew.h>
 
 // Шейдер вроде бы работает как надо
 class Shader {
 private:
+	//static Shader* activeShader; // Шейдер, который в данный момент используется
+
 	std::string vertexPath, fragmentPath;
-	std::map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
-	std::map<GLint, Texture*> textureTable; // Таблица со всеми текстурами, которые будут передаваться в uniform-ы в функции bindTextures()
+	std::unordered_map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
+	std::unordered_map<GLint, Texture*> textureTable; // Таблица со всеми текстурами, которые будут передаваться в uniform-ы в функции bindTextures()
 	GLuint id = 0;
 
 	GLint getMaxTextureUnits();
@@ -31,10 +34,28 @@ public:
 	void setUniform(const std::string& name, m3d::vec3f& v);
 	void setUniform(const std::string& name, m3d::vec4f& v);
 	void setUniform(const std::string& name, m3d::mat4f& v);
+	void setUniform(const Material& mat);
 	//add more uniforms if needed
 
 	void bindTextures();
 	void printInfo();
 	~Shader();
+};
+
+class ShaderManager {
+private:
+	std::unordered_map<std::string, Shader*> shaders;
+
+	ShaderManager() {};
+	ShaderManager(const ShaderManager& r) {};
+	ShaderManager operator=(const ShaderManager& r) {};
+	ShaderManager(ShaderManager&& r) noexcept {};
+	ShaderManager& operator=(const ShaderManager&& r) noexcept {};
+public:
+	static ShaderManager* getInstance();
+
+	Shader* getShader(std::string vertexPath, std::string fragmentPath);
+
+	~ShaderManager();
 };
 

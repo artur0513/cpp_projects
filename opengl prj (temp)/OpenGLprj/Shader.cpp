@@ -135,6 +135,12 @@ void Shader::setUniform(const std::string& name, Texture* v) {
     setUniform(name, *v);
 }
 
+void Shader::setUniform(const Material& mat) {
+    setUniform("map_Kd", mat.map_Kd);
+    // add more parametrs when needed
+}
+
+
 void Shader::bindTextures() {
     GLint index = 0;
     for (auto& t : textureTable) {
@@ -163,4 +169,33 @@ void Shader::printInfo() {
 }
 
 Shader::~Shader() { glDeleteProgram(id); }
+
+ShaderManager* ShaderManager::getInstance() {
+    static ShaderManager instance;
+    return &instance;
+}
+
+Shader* ShaderManager::getShader(std::string vertexPath, std::string fragmentPath) {
+    vertexPath = std::filesystem::relative(vertexPath).string();
+    fragmentPath = std::filesystem::relative(fragmentPath).string();
+
+    std::string fullPath = vertexPath + "&" + fragmentPath;
+
+    auto sh_iterator = shaders.find(fullPath);
+
+    if (sh_iterator != shaders.end())
+        return sh_iterator->second;
+
+    Shader* newSh = new Shader();
+    if (!newSh->loadFromFile(vertexPath, fragmentPath))
+        return nullptr;
+
+    shaders.emplace(fullPath, newSh);
+    return newSh;
+}
+
+ShaderManager::~ShaderManager() {
+    for (auto& tex : shaders)
+        delete tex.second; // Texture destructor will free gpu memory
+}
 

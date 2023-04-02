@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\mtl\\mtl_tubes3b.dds
+map_Kd forTests\mtl_tubes3b.dds
 map_d C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\mtl\\mtl_tubes3b.dds
 
 newmtl prop_pult4_S
@@ -22,7 +22,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds
+map_Kd forTests\prop_pult4.dds
 map_d C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds
 
 newmtl prop_pult4_S1
@@ -34,5 +34,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds
+map_Kd forTests\prop_pult4.dds
 map_d C:\\Users\\artur\\Desktop\\Артур\\for blender\\gamedata\\textures\\prop\\prop_pult4.dds

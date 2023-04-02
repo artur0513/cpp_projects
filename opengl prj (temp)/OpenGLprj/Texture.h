@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <unordered_map>
+#include <filesystem>
 #include <glew.h>
 
 class Image {
@@ -97,7 +98,7 @@ class Texture {
 protected:
     GLuint id = 0;
 
-    bool hasMipMap = false;
+    int hasMipMap = false;
     std::string name;
     uint32_t height = 0, width = 0;
 public:
@@ -107,4 +108,22 @@ public:
     void generateMipMap();
     const std::string& getName();
     ~Texture();
+};
+
+class TextureManager {
+private:
+    std::unordered_map<std::string, Texture*> textures;
+
+    TextureManager() {};
+    TextureManager(const TextureManager& r) {};
+    TextureManager operator=(const TextureManager& r) {};
+    TextureManager(TextureManager&& r) noexcept {};
+    TextureManager& operator=(const TextureManager&& r) noexcept {};
+public:
+    static TextureManager* getInstance();
+
+    Texture* getTexture(std::string filename);
+    void printInfo();
+
+    ~TextureManager();
 };

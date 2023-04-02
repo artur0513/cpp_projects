@@ -1,6 +1,45 @@
 ﻿#include "Mesh.h"
 #include <unordered_set>
 
+MaterialLibrary* MaterialLibrary::getInstance() {
+    static MaterialLibrary instance;
+    return &instance;
+}
+
+Material* MaterialLibrary::getMaterial(std::string materialName) {
+    auto mat_iterator = materials.find(materialName);
+    if (mat_iterator != materials.end())
+        return &mat_iterator->second;
+
+    return nullptr;
+}
+
+bool OBJ::loadMaterials(std::string filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Can`t open file and load materials: " << filename << "\n";
+        file.close();
+        return false;
+    }
+
+    MaterialLibrary* matlib = MaterialLibrary::getInstance();
+
+    std::string line, name, currentMat;
+    while (getline(file, line)) {
+        name = getLineName(line);
+
+        if (name == "newmtl") {
+            matlib->materials.emplace(line, Material());
+            currentMat = line;
+        }
+        else if (name == "map_Kd") {
+            matlib->materials[currentMat].map_Kd = TextureManager::getInstance()->getTexture(line);
+        }
+
+    }
+
+}
+
 std::vector<float> OBJ::Mesh::parseCoordLine(std::string line) { // works OK!
     size_t i = 0;
     std::vector<float> numbers;
@@ -53,7 +92,7 @@ void OBJ::Mesh::parseFaceLine(std::string line) {
     }
 }
 
-std::string OBJ::Mesh::getLineName(std::string& line) { // works OK!
+std::string OBJ::getLineName(std::string& line) { // works OK!
     size_t first = line.find_first_not_of(" "), last = line.find(" ", first);
     last = (last == std::string::npos) ? line.size() : last;
 
@@ -123,7 +162,9 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
             vertexNormals.push_back(m3d::vec3f(coords[0], coords[1], coords[2]));
         }
         else if (name == "mtllib") {
-            mtllibFile = line;
+            std::filesystem::path p(filename);
+            mtllibFile = p.parent_path().string() + "\\" + line;
+            loadMaterials(mtllibFile);
         }
         else if (name == "usemtl") {
             if (meshParts.size() == 0) {
@@ -134,6 +175,7 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
             meshParts.push_back(OBJ::MeshPart());
             (meshParts.end() - 1)->firstIndex = indices.size();
             (meshParts.end() - 1)->materialName = line;
+            (meshParts.end() - 1)->material = MaterialLibrary::getInstance()->getMaterial(line);
             (meshParts.end() - 1)->hasMaterial = true;
         }
         else if (name == "f") {
@@ -174,7 +216,6 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
             v.normal = norm * 32767.f;
         }
         VBOvertices.push_back(v);
-        std::cout << v.pos << "\n";
     }
 
     for (auto& index : indices) {

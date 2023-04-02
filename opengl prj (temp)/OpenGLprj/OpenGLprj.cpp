@@ -26,8 +26,8 @@ int main()
     }
     glfwSetErrorCallback(error_callback);
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
     if (!window) {
         std::cout << "error creating window \n";
@@ -48,32 +48,24 @@ int main()
     
     // Оно на удивление работает, пишем дальше загрузчик моделей
     OBJ::Mesh m;
-    m.loadFromFile("forTests/cube.obj");
+    m.loadFromFile("forTests/stol.obj");
 
-    Shader shader;
-    shader.loadFromFile("forTests/vertex.txt", "forTests/fragment.txt");
+    std::cout << m.meshParts.size();
 
-    Texture texture;
-    texture.loadFromFile("forTests/bricks.tga");
-
-    //Texture trollface;
-    //trollface.loadFromFile("forTests/trollface.tga");
+    Shader* shader = ShaderManager::getInstance()->getShader("forTests/vertex.txt", "forTests/fragment.txt");
+    Texture* texture = TextureManager::getInstance()->getTexture("forTests/bricks.tga");
 
     m3d::PersProjInfo info(3.141f/2.f, 4.f/3.f, 0.1, 30.0);
+
+    TextureManager::getInstance()->printInfo();
     
-    shader.use();
-    shader.setUniform("texture1", texture);
+    shader->use();
+    shader->setUniform("texture1", texture);
     //shader.setUniform("texture2", trollface);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    //std::cout << m3d::mat4f().init_rotation_X(0.5) << "\n";
-    //std::cout << m3d::mat4f().init_transfer(0, 0, 2)* m3d::mat4f().init_rotation_X(0.5) << "\n";
-    //std::cout << m3d::mat4f().init_perspective(info) * m3d::mat4f().init_transfer(0, 0, 2) * m3d::mat4f().init_rotation_X(0.5) << "\n";
-
-    //std::cout << m3d::mat4f().init_rotation_X(0.52) * m3d::vec4f(0, 1, 0, 1);
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     checkGLError();
@@ -84,21 +76,21 @@ int main()
 
         float time = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f;
 
-        m3d::mat4f matrix = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_transfer(0, 0, 0.7) * m3d::mat4f().init_rotation_X(time);
-        //m3d::mat4f matrix = m3d::mat4f().init_transfer(0, 0, 3.0) * m3d::mat4f().init_rotation_X(time);
-        shader.use();
-        shader.setUniform("mixcoeff", std::sin(time));
-        shader.setUniform("matrix", matrix);
-        shader.bindTextures();
+        m3d::mat4f matrix = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_transfer(0, 0, 1.7) * m3d::mat4f().init_rotation_Y(std::sin(time)) * m3d::mat4f().init_rotation_X(time);
+
+        shader->use();
+        shader->setUniform("matrix", matrix);
 
         glBindVertexArray(m.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
-        for (auto& mpart : m.meshParts)
+        for (auto& mpart : m.meshParts) {
+            shader->setUniform(*mpart.material);
+            shader->bindTextures();
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    shader.printInfo();
 }
 

@@ -3,6 +3,7 @@
 
 newmtl None
 Ns 500
+map_Kd test.tga
 Ka 0.8 0.8 0.8
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
