@@ -60,7 +60,7 @@ int main()
     TextureManager::getInstance()->printInfo();
     
     shader->use();
-    shader->setUniform("texture1", texture);
+    shader->setUniform("texture1", *texture);
     //shader.setUniform("texture2", trollface);
 
     glEnable(GL_DEPTH_TEST);
@@ -81,7 +81,7 @@ int main()
         shader->use();
         shader->setUniform("matrix", matrix);
 
-        glBindVertexArray(m.VAO);
+        glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
             shader->setUniform(*mpart.material);

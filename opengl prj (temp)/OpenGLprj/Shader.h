@@ -29,7 +29,6 @@ public:
 	void setUniform(const std::string& name, int v);
 	void setUniform(const std::string& name, float v);
 	void setUniform(const std::string& name, Texture& v);
-	void setUniform(const std::string& name, Texture* v);
 	void setUniform(const std::string& name, m3d::vec2f& v);
 	void setUniform(const std::string& name, m3d::vec3f& v);
 	void setUniform(const std::string& name, m3d::vec4f& v);

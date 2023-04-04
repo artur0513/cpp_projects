@@ -160,6 +160,40 @@ bool DDSImage::loadFromFile(std::string filename) {
     return true;
 }
 
+Texture::Texture() {};
+
+Texture::Texture(Texture&& t) noexcept {
+    id = t.id;
+    t.id = 0;
+
+    height = t.height;
+    width = t.width;
+    name = t.name;
+    hasMipMap = t.hasMipMap;
+
+    t.height = 0;
+    t.width = 0;
+    t.name = "";
+    t.hasMipMap = false;
+}
+
+Texture& Texture::operator=(Texture&& t) noexcept {
+    id = t.id;
+    t.id = 0;
+
+    height = t.height;
+    width = t.width;
+    name = t.name;
+    hasMipMap = t.hasMipMap;
+
+    t.height = 0;
+    t.width = 0;
+    t.name = "";
+    t.hasMipMap = false;
+
+    return *this;
+}
+
 GLuint Texture::loadFromFile(std::string filename) {
     filename = std::filesystem::relative(filename).string(); // Приводм название файла к единому виду
     std::string ext = filename.substr(filename.rfind(".")); // Берем расширение файла

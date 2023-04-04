@@ -131,12 +131,8 @@ void Shader::setUniform(const std::string& name, Texture& v) {
         tableLocation->second = &v;
 }
 
-void Shader::setUniform(const std::string& name, Texture* v) {
-    setUniform(name, *v);
-}
-
 void Shader::setUniform(const Material& mat) {
-    setUniform("map_Kd", mat.map_Kd);
+    setUniform("map_Kd", *mat.diffuseTexture);
     // add more parametrs when needed
 }
 

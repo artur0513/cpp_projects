@@ -98,11 +98,18 @@ class Texture {
 protected:
     GLuint id = 0;
 
-    int hasMipMap = false;
+    bool hasMipMap = false;
     std::string name;
     uint32_t height = 0, width = 0;
+
+    Texture(const Texture& t) = delete;
+    Texture operator=(const Texture& t) = delete;
 public:
-    GLuint loadFromFile(std::string filename); // Возвращает id текстуры в случае успеха, либо 0 в случае ошибки
+    Texture();
+    Texture(Texture&& t) noexcept;
+    Texture& operator=(Texture&& t) noexcept;
+
+    [[nodiscard]] GLuint loadFromFile(std::string filename); // Возвращает id текстуры в случае успеха, либо 0 в случае ошибки
     GLuint getId();
     void bind(GLenum texture = GL_TEXTURE0);
     void generateMipMap();

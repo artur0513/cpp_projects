@@ -36,6 +36,9 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3dMath\3dMath.h">
@@ -63,6 +66,12 @@
       <Filter>Файлы заголовков\resourceLoader</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
+      <Filter>Файлы заголовков\resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Файлы заголовков\resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
       <Filter>Файлы заголовков\resourceLoader</Filter>
     </ClInclude>
   </ItemGroup>

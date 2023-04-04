@@ -5,16 +5,21 @@
 #include <glew.h>
 #include "3dMath/3dMath.h"
 #include "Texture.h"
+#include "Material.h"
+
+struct VertexDataHandle {
+    GLuint VAO = 0, VBO = 0, EBO = 0;
+};
+
+struct Vertex {
+    m3d::vec3f pos;
+    m3d::vec2<GLushort> texCoord;
+    m3d::vec3<GLshort> normal;
+};
 
 namespace OBJ {
     bool loadMaterials(std::string filename);
 }
-
-struct Material {
-    Texture* map_Kd; // diffuse texture
-    
-    // other paramters
-};
 
 class MaterialLibrary {
 protected:
@@ -33,13 +38,9 @@ public:
     Material* getMaterial(std::string materialName);
 };
 
-struct Vertex {
-    m3d::vec3f pos;
-    m3d::vec2<GLushort> texCoord;
-    m3d::vec3<GLshort> normal;
-};
-
 namespace OBJ {
+    // переделать всю эту хуету в одну функцию
+
     std::string getLineName(std::string& line);
 
     struct Index {
@@ -76,7 +77,7 @@ namespace OBJ {
     public:
         std::vector<MeshPart> meshParts; // Тут нужно разделение на обьекты и их части
 
-        unsigned VBO, VAO, EBO;
+        VertexDataHandle vdh;
         std::string& getObjectName();
         bool loadFromFile(std::string filename);
         ~Mesh();

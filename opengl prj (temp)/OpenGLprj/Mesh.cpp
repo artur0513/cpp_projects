@@ -33,7 +33,7 @@ bool OBJ::loadMaterials(std::string filename) {
             currentMat = line;
         }
         else if (name == "map_Kd") {
-            matlib->materials[currentMat].map_Kd = TextureManager::getInstance()->getTexture(line);
+            matlib->materials[currentMat].diffuseTexture = TextureManager::getInstance()->getTexture(line);
         }
 
     }
@@ -106,16 +106,16 @@ std::string OBJ::getLineName(std::string& line) { // works OK!
 }
 
 void OBJ::Mesh::passToGPU() {
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    glGenVertexArrays(1, &vdh.VAO);
+    glGenBuffers(1, &vdh.VBO);
+    glGenBuffers(1, &vdh.EBO);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(vdh.VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, vdh.VBO);
     glBufferData(GL_ARRAY_BUFFER, VBOvertices.size() * sizeof(Vertex), VBOvertices.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vdh.EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, EBOindices.size() * sizeof(unsigned), EBOindices.data(), GL_STATIC_DRAW);
 
     // Координатные атрибуты
@@ -232,7 +232,7 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
 }
 
 OBJ::Mesh::~Mesh() {
-    glDeleteBuffers(1, &EBO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &vdh.EBO);
+    glDeleteBuffers(1, &vdh.VBO);
+    glDeleteVertexArrays(1, &vdh.VAO);
 }
