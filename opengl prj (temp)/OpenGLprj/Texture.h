@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <glew.h>
+#include "3dMath/3dMath.h"
 
 class Image {
 protected:
@@ -94,11 +95,12 @@ public:
     [[nodiscard]] bool loadFromFile(std::string filename) override;
 };
 
+// maybe add copy constructor + save to image function
 class Texture {
 protected:
     GLuint id = 0;
 
-    bool hasMipMap = false;
+    bool t_hasMipMap = false, t_isSmooth = true;
     std::string name;
     uint32_t height = 0, width = 0;
 
@@ -110,27 +112,15 @@ public:
     Texture& operator=(Texture&& t) noexcept;
 
     [[nodiscard]] GLuint loadFromFile(std::string filename); // Возвращает id текстуры в случае успеха, либо 0 в случае ошибки
-    GLuint getId();
     void bind(GLenum texture = GL_TEXTURE0);
     void generateMipMap();
+    void setSmooth(bool smooth);
+
+    GLuint getId();
+    m3d::vec2<uint32_t> getSize();
     const std::string& getName();
+    bool hasMipMap();
+    bool isSmooth();
+
     ~Texture();
-};
-
-class TextureManager {
-private:
-    std::unordered_map<std::string, Texture*> textures;
-
-    TextureManager() {};
-    TextureManager(const TextureManager& r) {};
-    TextureManager operator=(const TextureManager& r) {};
-    TextureManager(TextureManager&& r) noexcept {};
-    TextureManager& operator=(const TextureManager&& r) noexcept {};
-public:
-    static TextureManager* getInstance();
-
-    Texture* getTexture(std::string filename);
-    void printInfo();
-
-    ~TextureManager();
 };

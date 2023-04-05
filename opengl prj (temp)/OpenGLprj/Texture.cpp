@@ -169,12 +169,13 @@ Texture::Texture(Texture&& t) noexcept {
     height = t.height;
     width = t.width;
     name = t.name;
-    hasMipMap = t.hasMipMap;
+    t_hasMipMap = t.t_hasMipMap;
+    t_isSmooth = t.t_isSmooth;
 
     t.height = 0;
     t.width = 0;
     t.name = "";
-    t.hasMipMap = false;
+    t.t_hasMipMap = false;
 }
 
 Texture& Texture::operator=(Texture&& t) noexcept {
@@ -184,12 +185,13 @@ Texture& Texture::operator=(Texture&& t) noexcept {
     height = t.height;
     width = t.width;
     name = t.name;
-    hasMipMap = t.hasMipMap;
+    t_hasMipMap = t.t_hasMipMap;
+    t_isSmooth = t.t_isSmooth;
 
     t.height = 0;
     t.width = 0;
     t.name = "";
-    t.hasMipMap = false;
+    t.t_hasMipMap = false;
 
     return *this;
 }
@@ -228,8 +230,11 @@ GLuint Texture::loadFromFile(std::string filename) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // Установка параметров фильтрации текстуры
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // assume t_isSmooth = true by deafault
+    if (img->getMipMapCount() > 1)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    else 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     // Если тип сжатия = 0, т.е. без сжатия то используем одну функцию, иначе другую + грузим все мипмапы
     if (img->getCompressionType() != 0)
@@ -239,7 +244,7 @@ GLuint Texture::loadFromFile(std::string filename) {
         for (uint32_t i = 0; i < img->getMipMapCount(); i++)
             glTexImage2D(GL_TEXTURE_2D, i, img->isRGBA() ? GL_RGBA : GL_RGB, img->getWidth(i), img->getHeight(i), 0, img->isRGBA() ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, img->getData(i));
 
-    hasMipMap = (img->getMipMapCount() > 0); // Сохраняем необходимые данные
+    t_hasMipMap = (img->getMipMapCount() > 0); // Сохраняем необходимые данные
     name = filename;
     width = img->getWidth();
     height = img->getHeight();
@@ -253,52 +258,38 @@ void Texture::bind(GLenum texture) {
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-void Texture::generateMipMap() {
-    if (!hasMipMap) {
+void Texture::generateMipMap() { // works fine
+    if (!t_hasMipMap) {
+        glBindTexture(GL_TEXTURE_2D, id);
         glGenerateTextureMipmap(id);
-        hasMipMap = true;
+        if (t_isSmooth)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        else 
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        t_hasMipMap = true;
     }
 }
 
-GLuint Texture::getId() {
-    return id;
+void Texture::setSmooth(bool smooth) { // works fine
+    if (smooth == t_isSmooth)
+        return;
+
+    t_isSmooth = smooth;
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, t_isSmooth ? GL_LINEAR : GL_NEAREST);
+
+    if (t_hasMipMap)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, t_isSmooth ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR);
+    else
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, t_isSmooth ? GL_LINEAR : GL_NEAREST);
 }
 
-const std::string& Texture::getName() {
-    return name;
-}
+GLuint Texture::getId() { return id; }
+bool Texture::hasMipMap() { return t_hasMipMap; }
+bool Texture::isSmooth() { return t_isSmooth; }
+m3d::vec2<uint32_t> Texture::getSize() { return m3d::vec2<uint32_t>(width, height); }
+const std::string& Texture::getName() { return name; }
 
 Texture::~Texture() {
     glDeleteTextures(1, &id);
-}
-
-TextureManager* TextureManager::getInstance() {
-    static TextureManager instance;
-    return &instance;
-}
-
-Texture* TextureManager::getTexture(std::string filename) {
-    filename = std::filesystem::relative(filename).string();
-    auto tex_iterator = textures.find(filename);
-
-    if (tex_iterator != textures.end())
-        return tex_iterator->second;
-
-    Texture* newTex = new Texture();
-    if (!newTex->loadFromFile(filename))
-        return nullptr;
-
-    textures.emplace(filename, newTex);
-    return newTex;
-}
-
-void TextureManager::printInfo() {
-    std::cout << "================ Texture Manager info ================\n";
-    for (auto& tex : textures)
-        std::cout << tex.first << "\n";
-}
-
-TextureManager::~TextureManager() {
-    for (auto& tex : textures)
-        delete tex.second; // Texture destructor will free gpu memory
 }

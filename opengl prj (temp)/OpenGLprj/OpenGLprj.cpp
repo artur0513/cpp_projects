@@ -53,14 +53,14 @@ int main()
     std::cout << m.meshParts.size();
 
     Shader* shader = ShaderManager::getInstance()->getShader("forTests/vertex.txt", "forTests/fragment.txt");
-    Texture* texture = TextureManager::getInstance()->getTexture("forTests/bricks.tga");
+    Texture texture;
+    texture.loadFromFile("forTests/bricks.tga");
+    texture.generateMipMap();
 
     m3d::PersProjInfo info(3.141f/2.f, 4.f/3.f, 0.1, 30.0);
-
-    TextureManager::getInstance()->printInfo();
     
     shader->use();
-    shader->setUniform("texture1", *texture);
+    shader->setUniform("texture1", texture);
     //shader.setUniform("texture2", trollface);
 
     glEnable(GL_DEPTH_TEST);
@@ -76,7 +76,7 @@ int main()
 
         float time = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f;
 
-        m3d::mat4f matrix = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_transfer(0, 0, 1.7) * m3d::mat4f().init_rotation_Y(std::sin(time)) * m3d::mat4f().init_rotation_X(time);
+        m3d::mat4f matrix = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_transfer(0, 0, 1.7) * m3d::mat4f().init_rotation_Y(0.5) * m3d::mat4f().init_rotation_X(-1.2);
 
         shader->use();
         shader->setUniform("matrix", matrix);
@@ -85,6 +85,7 @@ int main()
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
             shader->setUniform(*mpart.material);
+            mpart.material->diffuseTexture->setSmooth(std::sin(time) > 0);
             shader->bindTextures();
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
         }

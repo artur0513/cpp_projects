@@ -5,7 +5,7 @@
 #include "Shader.h"
 
 // Delete all other managers, use only this
-
+// Or maybe just use funtions + namespace here
 class ResourceManager {
 private:
 	std::unordered_map<std::string, Texture*> textures;
