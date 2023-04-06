@@ -90,32 +90,33 @@ GLint Shader::getUniformLocation(const std::string& name) {
 }
 
 void Shader::setUniform(const std::string& name, int v) {
-    assert(textureTable.find(getUniformLocation(name)) == textureTable.end()); // Trying to use a uniform that was previously used for a texture
+    // Trying to use a uniform that was previously used for a texture
+    assert(textureTable.find(getUniformLocation(name)) == textureTable.end() && cubemapTable.find(getUniformLocation(name)) == cubemapTable.end());
     glUniform1i(getUniformLocation(name), v);
 }
 
 void Shader::setUniform(const std::string& name, float v) { 
-    assert(textureTable.find(getUniformLocation(name)) == textureTable.end());
+    assert(textureTable.find(getUniformLocation(name)) == textureTable.end() && cubemapTable.find(getUniformLocation(name)) == cubemapTable.end());
     glUniform1f(getUniformLocation(name), v);
 }
 
 void Shader::setUniform(const std::string& name, m3d::vec2f& v) {
-    assert(textureTable.find(getUniformLocation(name)) == textureTable.end());
+    assert(textureTable.find(getUniformLocation(name)) == textureTable.end() && cubemapTable.find(getUniformLocation(name)) == cubemapTable.end());
     glUniform2f(getUniformLocation(name), v.x, v.y);
 }
 
 void Shader::setUniform(const std::string& name, m3d::vec3f& v) {
-    assert(textureTable.find(getUniformLocation(name)) == textureTable.end());
+    assert(textureTable.find(getUniformLocation(name)) == textureTable.end() && cubemapTable.find(getUniformLocation(name)) == cubemapTable.end());
     glUniform3f(getUniformLocation(name), v.x, v.y, v.z);
 }
 
 void Shader::setUniform(const std::string& name, m3d::vec4f& v) { 
-    assert(textureTable.find(getUniformLocation(name)) == textureTable.end());
+    assert(textureTable.find(getUniformLocation(name)) == textureTable.end() && cubemapTable.find(getUniformLocation(name)) == cubemapTable.end());
     glUniform4f(getUniformLocation(name), v.x, v.y, v.z, v.w);
 }
 
 void Shader::setUniform(const std::string& name, m3d::mat4f& v) {
-    assert(textureTable.find(getUniformLocation(name)) == textureTable.end());
+    assert(textureTable.find(getUniformLocation(name)) == textureTable.end() && cubemapTable.find(getUniformLocation(name)) == cubemapTable.end());
     glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, v());
 }
 
@@ -131,11 +132,22 @@ void Shader::setUniform(const std::string& name, Texture& v) {
         tableLocation->second = &v;
 }
 
+void Shader::setUniform(const std::string& name, Cubemap& v) {
+    GLint uniformLocation = getUniformLocation(name);
+    auto tableLocation = cubemapTable.find(uniformLocation);
+    if (uniformLocation == -1)
+        return;
+
+    else if (tableLocation == cubemapTable.end())
+        cubemapTable.insert(std::pair<GLint, Cubemap*>(uniformLocation, &v));
+    else
+        tableLocation->second = &v;
+}
+
 void Shader::setUniform(const Material& mat) {
     setUniform("map_Kd", *mat.diffuseTexture);
     // add more parametrs when needed
 }
-
 
 void Shader::bindTextures() {
     GLint index = 0;
@@ -143,6 +155,12 @@ void Shader::bindTextures() {
         assert(index < maxTextureUnits); // Trying to bind too many textures ( > maxTextureUnits)
         t.second->bind(GL_TEXTURE0 + index);
         glUniform1i(t.first, index);
+        index++;
+    }
+    for (auto& c : cubemapTable) {
+        assert(index < maxTextureUnits); // Trying to bind too many textures ( > maxTextureUnits)
+        c.second->bind(GL_TEXTURE0 + index);
+        glUniform1i(c.first, index);
         index++;
     }
 }

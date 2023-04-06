@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include "Texture.h"
+#include "Cubemap.h"
 #include "Mesh.h"
 #include "3dMath/3dMath.h"
 #include <fstream>
@@ -15,7 +16,9 @@ private:
 
 	std::string vertexPath, fragmentPath;
 	std::unordered_map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
+
 	std::unordered_map<GLint, Texture*> textureTable; // Таблица со всеми текстурами, которые будут передаваться в uniform-ы в функции bindTextures()
+	std::unordered_map<GLint, Cubemap*> cubemapTable;
 	GLuint id = 0;
 
 	GLint getMaxTextureUnits();
@@ -29,6 +32,7 @@ public:
 	void setUniform(const std::string& name, int v);
 	void setUniform(const std::string& name, float v);
 	void setUniform(const std::string& name, Texture& v);
+	void setUniform(const std::string& name, Cubemap& v);
 	void setUniform(const std::string& name, m3d::vec2f& v);
 	void setUniform(const std::string& name, m3d::vec3f& v);
 	void setUniform(const std::string& name, m3d::vec4f& v);

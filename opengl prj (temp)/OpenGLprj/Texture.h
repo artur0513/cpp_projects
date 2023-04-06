@@ -102,7 +102,7 @@ protected:
 
     bool t_hasMipMap = false, t_isSmooth = true;
     std::string name;
-    uint32_t height = 0, width = 0;
+    m3d::vec2<uint32_t> size;
 
     Texture(const Texture& t) = delete;
     Texture operator=(const Texture& t) = delete;
@@ -116,11 +116,11 @@ public:
     void generateMipMap();
     void setSmooth(bool smooth);
 
-    GLuint getId();
-    m3d::vec2<uint32_t> getSize();
+    const GLuint getId();
+    const m3d::vec2<uint32_t> getSize();
     const std::string& getName();
-    bool hasMipMap();
-    bool isSmooth();
+    const bool hasMipMap();
+    const bool isSmooth();
 
     ~Texture();
 };

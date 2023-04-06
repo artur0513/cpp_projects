@@ -50,17 +50,23 @@ int main()
     OBJ::Mesh m;
     m.loadFromFile("forTests/stol.obj");
 
-    std::cout << m.meshParts.size();
+    m.meshParts.size();
 
     Shader* shader = ShaderManager::getInstance()->getShader("forTests/vertex.txt", "forTests/fragment.txt");
     Texture texture;
-    texture.loadFromFile("forTests/bricks.tga");
+    texture.loadFromFile("forTests\\bricks.tga");
     texture.generateMipMap();
+
+    Cubemap st;
+    std::string st_names[6] = { "forTests\\cubemap\\_#1.tga", "forTests\\cubemap\\_#2.tga",
+    "forTests\\cubemap\\_#3.tga" , "forTests\\cubemap\\_#4.tga" , "forTests\\cubemap\\_#5.tga" , "forTests\\cubemap\\_#6.tga" };
+    st.loadFromFile(st_names);
 
     m3d::PersProjInfo info(3.141f/2.f, 4.f/3.f, 0.1, 30.0);
     
     shader->use();
     shader->setUniform("texture1", texture);
+    shader->setUniform("skybox", st);
     //shader.setUniform("texture2", trollface);
 
     glEnable(GL_DEPTH_TEST);
@@ -84,7 +90,8 @@ int main()
         glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
-            shader->setUniform(*mpart.material);
+            //shader->setUniform(*mpart.material);
+            shader->setUniform("map_Kd", texture);
             mpart.material->diffuseTexture->setSmooth(std::sin(time) > 0);
             shader->bindTextures();
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
@@ -93,5 +100,6 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    shader->printInfo();
 }
 

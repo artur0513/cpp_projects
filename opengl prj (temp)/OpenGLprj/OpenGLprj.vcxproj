@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3dMath\3dMath.cpp" />
+    <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OpenGLprj.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="3dMath\vec2.h" />
     <ClInclude Include="3dMath\vec3.h" />
     <ClInclude Include="3dMath\vec4.h" />
+    <ClInclude Include="Cubemap.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ResourceManager.h" />

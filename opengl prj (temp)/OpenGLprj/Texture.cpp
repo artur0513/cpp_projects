@@ -1,6 +1,8 @@
 ﻿#include "Texture.h"
 #include <filesystem>
 
+// =============== TGAImage ===============
+
 uint32_t TGAImage::getWidth(int mipMapLevel) { return mipMaps[0].width; }
 uint32_t TGAImage::getHeight(int mipMapLevel) { return mipMaps[0].height; }
 uint32_t TGAImage::getSize(int mipMapLevel) { return mipMaps[0].size; }
@@ -94,6 +96,8 @@ bool TGAImage::loadFromFile(std::string filename) {
     return true;
 }
 
+// =============== DDSImage ===============
+
 uint32_t DDSImage::getWidth(int mipMapLevel) { return mipMaps[mipMapLevel].width; }
 uint32_t DDSImage::getHeight(int mipMapLevel) { return mipMaps[mipMapLevel].height; }
 uint32_t DDSImage::getSize(int mipMapLevel) { return mipMaps[mipMapLevel].size; }
@@ -160,20 +164,20 @@ bool DDSImage::loadFromFile(std::string filename) {
     return true;
 }
 
+// =============== Texture ===============
+
 Texture::Texture() {};
 
 Texture::Texture(Texture&& t) noexcept {
     id = t.id;
     t.id = 0;
 
-    height = t.height;
-    width = t.width;
+    size = t.size;
     name = t.name;
     t_hasMipMap = t.t_hasMipMap;
     t_isSmooth = t.t_isSmooth;
 
-    t.height = 0;
-    t.width = 0;
+    t.size = { 0, 0 };
     t.name = "";
     t.t_hasMipMap = false;
 }
@@ -182,14 +186,12 @@ Texture& Texture::operator=(Texture&& t) noexcept {
     id = t.id;
     t.id = 0;
 
-    height = t.height;
-    width = t.width;
+    size = t.size;
     name = t.name;
     t_hasMipMap = t.t_hasMipMap;
     t_isSmooth = t.t_isSmooth;
 
-    t.height = 0;
-    t.width = 0;
+    t.size = { 0, 0 };
     t.name = "";
     t.t_hasMipMap = false;
 
@@ -231,7 +233,7 @@ GLuint Texture::loadFromFile(std::string filename) {
 
     // Установка параметров фильтрации текстуры
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // assume t_isSmooth = true by deafault
-    if (img->getMipMapCount() > 1)
+    if (img->getMipMapCount() == 1)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     else 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -246,8 +248,8 @@ GLuint Texture::loadFromFile(std::string filename) {
 
     t_hasMipMap = (img->getMipMapCount() > 0); // Сохраняем необходимые данные
     name = filename;
-    width = img->getWidth();
-    height = img->getHeight();
+    size.x = img->getWidth();
+    size.y = img->getHeight();
 
     delete img;
     return id;
@@ -284,12 +286,9 @@ void Texture::setSmooth(bool smooth) { // works fine
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, t_isSmooth ? GL_LINEAR : GL_NEAREST);
 }
 
-GLuint Texture::getId() { return id; }
-bool Texture::hasMipMap() { return t_hasMipMap; }
-bool Texture::isSmooth() { return t_isSmooth; }
-m3d::vec2<uint32_t> Texture::getSize() { return m3d::vec2<uint32_t>(width, height); }
+const GLuint Texture::getId() { return id; }
+const bool Texture::hasMipMap() { return t_hasMipMap; }
+const bool Texture::isSmooth() { return t_isSmooth; }
+const m3d::vec2<uint32_t> Texture::getSize() { return size; }
 const std::string& Texture::getName() { return name; }
-
-Texture::~Texture() {
-    glDeleteTextures(1, &id);
-}
+Texture::~Texture() { glDeleteTextures(1, &id); }
