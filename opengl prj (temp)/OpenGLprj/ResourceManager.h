@@ -8,8 +8,8 @@
 // Or maybe just use funtions + namespace here
 class ResourceManager {
 private:
-	std::unordered_map<std::string, Texture*> textures;
-	std::unordered_map<std::string, Shader*> shaders;
+	std::unordered_map<std::string, ogl::Texture*> textures;
+	std::unordered_map<std::string, ogl::Shader*> shaders;
 
 	std::unordered_map<std::string, Material> materials;
 	std::unordered_map<std::string, VertexDataHandle> meshes;
@@ -17,8 +17,8 @@ private:
 public:
 	ResourceManager();
 
-	Texture* getTexture();
-	Shader* getShader();
+	ogl::Texture* getTexture();
+	ogl::Shader* getShader();
 	Material getMaterial();
 
 	~ResourceManager();

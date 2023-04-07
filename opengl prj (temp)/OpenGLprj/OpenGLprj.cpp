@@ -50,17 +50,21 @@ int main()
     OBJ::Mesh m;
     m.loadFromFile("forTests/stol.obj");
 
-    m.meshParts.size();
+    //m.meshParts.size();
 
-    Shader* shader = ShaderManager::getInstance()->getShader("forTests/vertex.txt", "forTests/fragment.txt");
-    Texture texture;
+    ogl::Shader* shader = ogl::ShaderManager::getInstance()->getShader("forTests/vertex.txt", "forTests/fragment.txt");
+    ogl::Texture texture;
     texture.loadFromFile("forTests\\bricks.tga");
     texture.generateMipMap();
 
-    Cubemap st;
-    std::string st_names[6] = { "forTests\\cubemap\\_#1.tga", "forTests\\cubemap\\_#2.tga",
-    "forTests\\cubemap\\_#3.tga" , "forTests\\cubemap\\_#4.tga" , "forTests\\cubemap\\_#5.tga" , "forTests\\cubemap\\_#6.tga" };
+    ogl::Cubemap st;
+    //std::string st_names[6] = { "forTests\\cubemap\\_#1.dds", "forTests\\cubemap\\_#2.dds",
+    //"forTests\\cubemap\\_#3.dds" , "forTests\\cubemap\\_#4.dds" , "forTests\\cubemap\\_#5.dds" , "forTests\\cubemap\\_#6.dds" };
+
+    std::string st_names[6] = { "forTests\\cubemap\\_#1.dds", "forTests\\cubemap\\_#2.dds",
+    "forTests\\cubemap\\_#3.dds" , "forTests\\cubemap\\_#4.dds" , "forTests\\cubemap\\_#5.dds" , "forTests\\cubemap\\_#6.dds" };
     st.loadFromFile(st_names);
+    //st.generateMipMap();
 
     m3d::PersProjInfo info(3.141f/2.f, 4.f/3.f, 0.1, 30.0);
     
@@ -72,6 +76,8 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //auto x = createSkyboxVAO();
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     checkGLError();
@@ -92,7 +98,7 @@ int main()
         for (auto& mpart : m.meshParts) {
             //shader->setUniform(*mpart.material);
             shader->setUniform("map_Kd", texture);
-            mpart.material->diffuseTexture->setSmooth(std::sin(time) > 0);
+            st.setSmooth(std::sin(time) > 0);
             shader->bindTextures();
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
         }

@@ -33,7 +33,7 @@ bool OBJ::loadMaterials(std::string filename) {
             currentMat = line;
         }
         else if (name == "map_Kd") {
-            Texture *texture = new Texture(); // Memory leak, besause no texture manager now
+            ogl::Texture *texture = new ogl::Texture(); // Memory leak, besause no texture manager now
             texture->loadFromFile(line);
             matlib->materials[currentMat].diffuseTexture = texture;
         }

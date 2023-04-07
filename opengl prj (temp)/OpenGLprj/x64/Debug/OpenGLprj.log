@@ -1,35 +1,31 @@
-﻿  OpenGLprj.cpp
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(53,21): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(57,25): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(63,20): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(65,58): warning C4305: инициализация: усечение из "double" в "float"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(85,103): warning C4305: аргумент: усечение из "double" в "T"
+﻿  Cubemap.cpp
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(8,9): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
           with
           [
-              T=float
+              T=uint32_t
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(85,176): warning C4305: аргумент: усечение из "double" в "T"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(10,1): message : во время компиляции функции-члена класс шаблон "m3d::vec2<uint32_t>::vec2(void)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Cubemap.cpp(6,25): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::vec2<uint32_t>::vec2(void)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Texture.h(109,29): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::vec2<uint32_t>"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(8,18): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
           with
           [
-              T=float
+              T=uint32_t
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(97,102): warning C4267: аргумент: преобразование из "size_t" в "GLsizei"; возможна потеря данных
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(109,37): warning C4244: =: преобразование "double" в "T", возможна потеря данных
+  Skybox.cpp
+  Texture.cpp
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(8,9): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
           with
           [
-              T=float
+              T=uint32_t
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(108,1): message : во время компиляции функции-члена класс шаблон "m3d::mat4<float> &m3d::mat4<float>::init_perspective(const m3d::PersProjInfo &)"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(85,141): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::mat4<float> &m3d::mat4<float>::init_perspective(const m3d::PersProjInfo &)"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(85,29): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::mat4<float>"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(110,33): warning C4244: =: преобразование "double" в "T", возможна потеря данных
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(10,1): message : во время компиляции функции-члена класс шаблон "m3d::vec2<uint32_t>::vec2(void)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Texture.cpp(207,25): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::vec2<uint32_t>::vec2(void)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Texture.h(109,29): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::vec2<uint32_t>"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(8,18): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
           with
           [
-              T=float
+              T=uint32_t
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(111,127): warning C4244: =: преобразование "double" в "T", возможна потеря данных
-          with
-          [
-              T=float
-          ]
+  Создание кода...
   OpenGLprj.vcxproj -> C:\Users\artur\Desktop\Артур\OpenGLprj\x64\Debug\OpenGLprj.exe

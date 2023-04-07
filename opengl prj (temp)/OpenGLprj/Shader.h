@@ -9,56 +9,61 @@
 #include <unordered_map>
 #include <glew.h>
 
-// Шейдер вроде бы работает как надо
-class Shader {
-private:
-	//static Shader* activeShader; // Шейдер, который в данный момент используется
+namespace ogl {
 
-	std::string vertexPath, fragmentPath;
-	std::unordered_map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
+	// Шейдер вроде бы работает как надо
+	class Shader {
+	private:
+		//static Shader* activeShader; // Шейдер, который в данный момент используется
 
-	std::unordered_map<GLint, Texture*> textureTable; // Таблица со всеми текстурами, которые будут передаваться в uniform-ы в функции bindTextures()
-	std::unordered_map<GLint, Cubemap*> cubemapTable;
-	GLuint id = 0;
+		std::string vertexPath, fragmentPath;
+		std::unordered_map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
 
-	GLint getMaxTextureUnits();
-	GLint getUniformLocation(const std::string& name);
-public:
-	GLint maxTextureUnits = getMaxTextureUnits();
-	GLuint loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath);
-	GLuint getId();
-	void use();
+		std::unordered_map<GLint, Texture*> textureTable; // Таблица со всеми текстурами, которые будут передаваться в uniform-ы в функции bindTextures()
+		std::unordered_map<GLint, Cubemap*> cubemapTable;
+		GLuint id = 0;
 
-	void setUniform(const std::string& name, int v);
-	void setUniform(const std::string& name, float v);
-	void setUniform(const std::string& name, Texture& v);
-	void setUniform(const std::string& name, Cubemap& v);
-	void setUniform(const std::string& name, m3d::vec2f& v);
-	void setUniform(const std::string& name, m3d::vec3f& v);
-	void setUniform(const std::string& name, m3d::vec4f& v);
-	void setUniform(const std::string& name, m3d::mat4f& v);
-	void setUniform(const Material& mat);
-	//add more uniforms if needed
+		GLint getMaxTextureUnits();
+		GLint getUniformLocation(const std::string& name);
+	public:
+		GLint maxTextureUnits = getMaxTextureUnits();
+		GLuint loadFromMemory(const std::string& vertexCode, const std::string& fragmentCode);
+		GLuint loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath);
+		GLuint getId();
+		void use();
 
-	void bindTextures();
-	void printInfo();
-	~Shader();
-};
+		void setUniform(const std::string& name, int v);
+		void setUniform(const std::string& name, float v);
+		void setUniform(const std::string& name, Texture& v);
+		void setUniform(const std::string& name, Cubemap& v);
+		void setUniform(const std::string& name, m3d::vec2f& v);
+		void setUniform(const std::string& name, m3d::vec3f& v);
+		void setUniform(const std::string& name, m3d::vec4f& v);
+		void setUniform(const std::string& name, m3d::mat4f& v);
+		void setUniform(const Material& mat);
+		//add more uniforms if needed
 
-class ShaderManager {
-private:
-	std::unordered_map<std::string, Shader*> shaders;
+		void bindTextures();
+		void printInfo();
+		~Shader();
+	};
 
-	ShaderManager() {};
-	ShaderManager(const ShaderManager& r) {};
-	ShaderManager operator=(const ShaderManager& r) {};
-	ShaderManager(ShaderManager&& r) noexcept {};
-	ShaderManager& operator=(const ShaderManager&& r) noexcept {};
-public:
-	static ShaderManager* getInstance();
+	class ShaderManager {
+	private:
+		std::unordered_map<std::string, Shader*> shaders;
 
-	Shader* getShader(std::string vertexPath, std::string fragmentPath);
+		ShaderManager() {};
+		ShaderManager(const ShaderManager& r) {};
+		ShaderManager operator=(const ShaderManager& r) {};
+		ShaderManager(ShaderManager&& r) noexcept {};
+		ShaderManager& operator=(const ShaderManager&& r) noexcept {};
+	public:
+		static ShaderManager* getInstance();
 
-	~ShaderManager();
-};
+		Shader* getShader(std::string vertexPath, std::string fragmentPath);
+
+		~ShaderManager();
+	};
+
+}
 

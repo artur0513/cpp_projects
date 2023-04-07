@@ -1,6 +1,8 @@
 ﻿#include "Shader.h"
 #include <cassert>
 
+using namespace ogl;
+
 // https://stackoverflow.com/questions/116038/how-do-i-read-an-entire-file-into-a-stdstring-in-c
 std::string readFile(const std::string& path) {
     constexpr auto read_size = std::size_t(4096);
@@ -15,18 +17,15 @@ std::string readFile(const std::string& path) {
     return out;
 }
 
-GLuint Shader::loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath) {
-    vertexPath = _vertexPath;
-    fragmentPath = _fragmentPath;
-    std::string vertexCodeStr = readFile(_vertexPath), fragmentCodeStr = readFile(_fragmentPath);
-    const char* vertexCodeChar = vertexCodeStr.c_str(), * fragmentCodeChar = fragmentCodeStr.c_str();
+GLuint Shader::loadFromMemory(const std::string& vertexCode, const std::string& fragmentCode) {
+    const char* vertexCodeChar = vertexCode.c_str(), * fragmentCodeChar = fragmentCode.c_str();
     GLuint vertexShader, fragmentShader;
 
     // Создаем вершинный шейдер
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexCodeChar, NULL);
     glCompileShader(vertexShader);
-    
+
     // Создаем фрагментный шейдер
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentCodeChar, NULL);
@@ -68,6 +67,13 @@ GLuint Shader::loadFromFile(const std::string& _vertexPath, const std::string& _
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     return id;
+}
+
+GLuint Shader::loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath) {
+    vertexPath = _vertexPath;
+    fragmentPath = _fragmentPath;
+    std::string vertexCodeStr = readFile(_vertexPath), fragmentCodeStr = readFile(_fragmentPath);
+    return loadFromMemory(vertexCodeStr, fragmentCodeStr);
 }
 
 GLuint Shader::getId() {

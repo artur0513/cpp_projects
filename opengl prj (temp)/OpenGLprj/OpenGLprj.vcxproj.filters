@@ -42,6 +42,9 @@
     <ClCompile Include="Cubemap.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3dMath\3dMath.h">
@@ -78,6 +81,9 @@
       <Filter>Файлы заголовков\resourceLoader</Filter>
     </ClInclude>
     <ClInclude Include="Cubemap.h">
+      <Filter>Файлы заголовков\resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
       <Filter>Файлы заголовков\resourceLoader</Filter>
     </ClInclude>
   </ItemGroup>

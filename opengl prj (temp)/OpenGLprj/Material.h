@@ -2,7 +2,7 @@
 #include "Texture.h"
 
 struct Material {
-	Texture* diffuseTexture;
+	ogl::Texture* diffuseTexture;
 
 	// add other paramters when needed
 };

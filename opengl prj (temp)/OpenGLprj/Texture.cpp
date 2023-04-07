@@ -3,15 +3,15 @@
 
 // =============== TGAImage ===============
 
-uint32_t TGAImage::getWidth(int mipMapLevel) { return mipMaps[0].width; }
-uint32_t TGAImage::getHeight(int mipMapLevel) { return mipMaps[0].height; }
-uint32_t TGAImage::getSize(int mipMapLevel) { return mipMaps[0].size; }
-bool TGAImage::isRGBA() { return bytesPerPixel == 4; }
-GLuint TGAImage::getCompressionType() { return 0; }
-uint32_t TGAImage::getMipMapCount() { return 1; }
-const uint8_t* TGAImage::getData(int mipMapLevel) { return mipMaps[0].pixels.data(); }
+uint32_t ogl::TGAImage::getWidth(int mipMapLevel) { return mipMaps[0].width; }
+uint32_t ogl::TGAImage::getHeight(int mipMapLevel) { return mipMaps[0].height; }
+uint32_t ogl::TGAImage::getSize(int mipMapLevel) { return mipMaps[0].size; }
+bool ogl::TGAImage::isRGBA() { return bytesPerPixel == 4; }
+GLuint ogl::TGAImage::getCompressionType() { return 0; }
+uint32_t ogl::TGAImage::getMipMapCount() { return 1; }
+const uint8_t* ogl::TGAImage::getData(int mipMapLevel) { return mipMaps[0].pixels.data(); }
 
-bool TGAImage::loadFromFile(std::string filename) {
+bool ogl::TGAImage::loadFromFile(std::string filename) {
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {
         std::cerr << "Can`t open file and load image: " << filename << "\n";
@@ -98,15 +98,15 @@ bool TGAImage::loadFromFile(std::string filename) {
 
 // =============== DDSImage ===============
 
-uint32_t DDSImage::getWidth(int mipMapLevel) { return mipMaps[mipMapLevel].width; }
-uint32_t DDSImage::getHeight(int mipMapLevel) { return mipMaps[mipMapLevel].height; }
-uint32_t DDSImage::getSize(int mipMapLevel) { return mipMaps[mipMapLevel].size; }
-uint32_t DDSImage::getMipMapCount() { return mipMapCount; }
-GLuint DDSImage::getCompressionType() { return compressionType; }
-const uint8_t* DDSImage::getData(int mipMapLevel) { return mipMaps[mipMapLevel].pixels.data(); }
-bool DDSImage::isRGBA() { return true; }
+uint32_t ogl::DDSImage::getWidth(int mipMapLevel) { return mipMaps[mipMapLevel].width; }
+uint32_t ogl::DDSImage::getHeight(int mipMapLevel) { return mipMaps[mipMapLevel].height; }
+uint32_t ogl::DDSImage::getSize(int mipMapLevel) { return mipMaps[mipMapLevel].size; }
+uint32_t ogl::DDSImage::getMipMapCount() { return mipMapCount; }
+GLuint ogl::DDSImage::getCompressionType() { return compressionType; }
+const uint8_t* ogl::DDSImage::getData(int mipMapLevel) { return mipMaps[mipMapLevel].pixels.data(); }
+bool ogl::DDSImage::isRGBA() { return true; }
 
-bool DDSImage::loadFromFile(std::string filename) {
+bool ogl::DDSImage::loadFromFile(std::string filename) {
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {
         std::cerr << "Can`t open file and load image: " << filename << "\n";
@@ -164,11 +164,49 @@ bool DDSImage::loadFromFile(std::string filename) {
     return true;
 }
 
+// =============== loadImage function ===============
+
+ogl::Image* ogl::loadImage(std::string filename, GLenum textureType) {
+    filename = std::filesystem::relative(filename).string(); // Приводм название файла к единому виду
+    std::string ext = filename.substr(filename.rfind(".")); // Берем расширение файла
+
+    Image* img;
+    if (ext == ".dds") {
+        img = new DDSImage();
+        if (!img->loadFromFile(filename)) {
+            std::cerr << "Unable to load texture: " << filename << "\n";
+            return nullptr;
+        }
+
+    }
+    else if (ext == ".tga") {
+        img = new TGAImage();
+        if (!img->loadFromFile(filename)) {
+            std::cerr << "Unable to load texture: " << filename << "\n";
+            return nullptr;
+        }
+    }
+    else {
+        std::cerr << "Unknown texture format. Supported are .dds and .tga: " << filename << "\n";
+        return nullptr;
+    }
+
+    // Если тип сжатия = 0, т.е. без сжатия то используем одну функцию, иначе другую + грузим все мипмапы
+    if (img->getCompressionType() != 0)
+        for (uint32_t i = 0; i < img->getMipMapCount(); i++)
+            glCompressedTexImage2D(textureType, i, img->getCompressionType(), img->getWidth(i), img->getHeight(i), 0, img->getSize(i), img->getData(i));
+    else
+        for (uint32_t i = 0; i < img->getMipMapCount(); i++)
+            glTexImage2D(textureType, i, img->isRGBA() ? GL_RGBA : GL_RGB, img->getWidth(i), img->getHeight(i), 0, img->isRGBA() ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, img->getData(i));
+
+    return img;
+}
+
 // =============== Texture ===============
 
-Texture::Texture() {};
+ogl::Texture::Texture() {};
 
-Texture::Texture(Texture&& t) noexcept {
+ogl::Texture::Texture(Texture&& t) noexcept {
     id = t.id;
     t.id = 0;
 
@@ -182,7 +220,7 @@ Texture::Texture(Texture&& t) noexcept {
     t.t_hasMipMap = false;
 }
 
-Texture& Texture::operator=(Texture&& t) noexcept {
+ogl::Texture& ogl::Texture::operator=(ogl::Texture&& t) noexcept {
     id = t.id;
     t.id = 0;
 
@@ -198,34 +236,13 @@ Texture& Texture::operator=(Texture&& t) noexcept {
     return *this;
 }
 
-GLuint Texture::loadFromFile(std::string filename) {
-    filename = std::filesystem::relative(filename).string(); // Приводм название файла к единому виду
-    std::string ext = filename.substr(filename.rfind(".")); // Берем расширение файла
-
-    Image* img;
-    if (ext == ".dds") {
-        img = new DDSImage();
-        if (!img->loadFromFile(filename)) {
-            std::cerr << "Unable to load texture: " << filename << "\n";
-            return 0;
-        }
-
-    }
-    else if (ext == ".tga") {
-        img = new TGAImage();
-        if (!img->loadFromFile(filename)) {
-            std::cerr << "Unable to load texture: " << filename << "\n";
-            return 0;
-        }
-    }
-    else {
-        std::cerr << "Unknown texture format. Supported are .dds and .tga: " << filename << "\n";
-        return 0;
-    }
-
-    // Если дошли до сюда, то значит в img загружена текстура
+GLuint ogl::Texture::loadFromFile(std::string filename) {
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
+
+    Image* img = loadImage(filename, GL_TEXTURE_2D);
+    if (img == nullptr)
+        return id;
 
     // Установка параметров наложения текстуры
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -238,14 +255,6 @@ GLuint Texture::loadFromFile(std::string filename) {
     else 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-    // Если тип сжатия = 0, т.е. без сжатия то используем одну функцию, иначе другую + грузим все мипмапы
-    if (img->getCompressionType() != 0)
-        for (uint32_t i = 0; i < img->getMipMapCount(); i++)
-            glCompressedTexImage2D(GL_TEXTURE_2D, i, img->getCompressionType(), img->getWidth(i), img->getHeight(i), 0, img->getSize(i), img->getData(i));
-    else 
-        for (uint32_t i = 0; i < img->getMipMapCount(); i++)
-            glTexImage2D(GL_TEXTURE_2D, i, img->isRGBA() ? GL_RGBA : GL_RGB, img->getWidth(i), img->getHeight(i), 0, img->isRGBA() ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, img->getData(i));
-
     t_hasMipMap = (img->getMipMapCount() > 0); // Сохраняем необходимые данные
     name = filename;
     size.x = img->getWidth();
@@ -255,12 +264,12 @@ GLuint Texture::loadFromFile(std::string filename) {
     return id;
 }
 
-void Texture::bind(GLenum texture) {
+void ogl::Texture::bind(GLenum texture) {
     glActiveTexture(texture);
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-void Texture::generateMipMap() { // works fine
+void ogl::Texture::generateMipMap() { // works fine
     if (!t_hasMipMap) {
         glBindTexture(GL_TEXTURE_2D, id);
         glGenerateTextureMipmap(id);
@@ -272,7 +281,7 @@ void Texture::generateMipMap() { // works fine
     }
 }
 
-void Texture::setSmooth(bool smooth) { // works fine
+void ogl::Texture::setSmooth(bool smooth) { // works fine
     if (smooth == t_isSmooth)
         return;
 
@@ -286,9 +295,9 @@ void Texture::setSmooth(bool smooth) { // works fine
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, t_isSmooth ? GL_LINEAR : GL_NEAREST);
 }
 
-const GLuint Texture::getId() { return id; }
-const bool Texture::hasMipMap() { return t_hasMipMap; }
-const bool Texture::isSmooth() { return t_isSmooth; }
-const m3d::vec2<uint32_t> Texture::getSize() { return size; }
-const std::string& Texture::getName() { return name; }
-Texture::~Texture() { glDeleteTextures(1, &id); }
+const GLuint ogl::Texture::getId() { return id; }
+const bool ogl::Texture::hasMipMap() { return t_hasMipMap; }
+const bool ogl::Texture::isSmooth() { return t_isSmooth; }
+const m3d::vec2<uint32_t> ogl::Texture::getSize() { return size; }
+const std::string& ogl::Texture::getName() { return name; }
+ogl::Texture::~Texture() { glDeleteTextures(1, &id); }
