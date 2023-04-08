@@ -27,8 +27,8 @@ namespace ogl {
 		GLint getUniformLocation(const std::string& name);
 	public:
 		GLint maxTextureUnits = getMaxTextureUnits();
-		GLuint loadFromMemory(const std::string& vertexCode, const std::string& fragmentCode);
-		GLuint loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath);
+		[[nodiscard]] GLuint loadFromMemory(const std::string& vertexCode, const std::string& fragmentCode);
+		[[nodiscard]] GLuint loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath);
 		GLuint getId();
 		void use();
 

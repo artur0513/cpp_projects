@@ -45,6 +45,9 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3dMath\3dMath.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Файлы заголовков\resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

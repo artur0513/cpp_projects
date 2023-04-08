@@ -92,6 +92,9 @@ GLint Shader::getUniformLocation(const std::string& name) {
     if (location != -1)
         uniforms.insert(std::pair<std::string, GLint>(name, location));
 
+    if (location == -1)
+        std::cerr << "uniform not found: " << name << "\n";
+
     return location;
 }
 

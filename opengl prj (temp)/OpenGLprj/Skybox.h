@@ -4,9 +4,13 @@
 
 namespace ogl::Skybox {
 
-	//void initSkyboxShader();
+	void initSkybox();
 
+	void setCameraMatrix(m3d::mat4f& mat);
 	
+	void setSkyboxCubemap(ogl::Cubemap& c);
+
+	void renderSkybox();
 
 }
 
