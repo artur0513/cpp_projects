@@ -7,14 +7,14 @@ ogl::Cubemap* currentCubemap;
 m3d::mat4f* currentCameraMatrix;
 
 float skyboxVertices[] = {
-    0.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 1.0f,
-    1.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 1.0f,
-    1.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 1.0f,
+1.0, 1.0, -1.0,
+1.0, -1.0, -1.0,
+1.0, 1.0, 1.0,
+1.0, -1.0, 1.0,
+-1.0, 1.0, -1.0,
+-1.0, -1.0, -1.0,
+-1.0, 1.0, 1.0,
+-1.0, -1.0, 1.0,
 };
 
 GLushort indices[]{
@@ -68,7 +68,7 @@ void ogl::Skybox::setSkyboxCubemap(ogl::Cubemap& c) {
 void ogl::Skybox::renderSkybox() {
     glBindVertexArray(VAO);
     skyboxShader.use();
-    skyboxShader.setUniform("cameraMatrix", *currentCameraMatrix);
+    skyboxShader.setUniform("matrix", *currentCameraMatrix);
     skyboxShader.setUniform("skybox", *currentCubemap);
     skyboxShader.bindTextures();
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);

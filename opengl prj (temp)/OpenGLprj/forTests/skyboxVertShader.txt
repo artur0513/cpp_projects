@@ -1,19 +1,14 @@
 #version 330 core
 layout (location = 0) in vec3 pos;
-layout (location = 1) in vec2 texCoord;
-layout (location = 2) in vec3 normal;
 
 uniform mat4 matrix;
 
-out vec2 TexCoord;
 out vec3 dir;
 
 void main()
 {	
-	vec4 posn = vec4(pos, 1.0);
-	//posn.z += 1.0;
-	gl_Position = matrix*posn;
-	dir = (matrix*posn).xyz;
-	TexCoord = texCoord;
+	vec4 persPos = matrix*vec4(pos, 1.0);
+	gl_Position = persPos;
+	dir = pos;
 }
 

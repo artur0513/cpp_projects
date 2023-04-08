@@ -92,9 +92,6 @@ GLint Shader::getUniformLocation(const std::string& name) {
     if (location != -1)
         uniforms.insert(std::pair<std::string, GLint>(name, location));
 
-    if (location == -1)
-        std::cerr << "uniform not found: " << name << "\n";
-
     return location;
 }
 
@@ -160,14 +157,15 @@ void Shader::setUniform(const Material& mat) {
 
 void Shader::bindTextures() {
     GLint index = 0;
+    //std::cout << maxTextureUnits << "\n";
     for (auto& t : textureTable) {
-        assert(index < maxTextureUnits); // Trying to bind too many textures ( > maxTextureUnits)
+        //assert(index < maxTextureUnits); // Trying to bind too many textures ( > maxTextureUnits)
         t.second->bind(GL_TEXTURE0 + index);
         glUniform1i(t.first, index);
         index++;
     }
     for (auto& c : cubemapTable) {
-        assert(index < maxTextureUnits); // Trying to bind too many textures ( > maxTextureUnits)
+        //assert(index < maxTextureUnits); // Trying to bind too many textures ( > maxTextureUnits)
         c.second->bind(GL_TEXTURE0 + index);
         glUniform1i(c.first, index);
         index++;

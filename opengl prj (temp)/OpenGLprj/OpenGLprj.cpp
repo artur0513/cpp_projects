@@ -36,8 +36,8 @@ int main()
         std::cout << "error creating window \n";
     }
 
-    glfwMakeContextCurrent(window); //Код чтобы убрать ограничение на 60 фпс
-    glfwSwapInterval(0);
+    //glfwMakeContextCurrent(window); //Код чтобы убрать ограничение на 60 фпс
+   //glfwSwapInterval(0);
 
     glfwMakeContextCurrent(window);
 
@@ -87,11 +87,6 @@ int main()
     //shader.setUniform("texture2", trollface);
 
 
-    ogl::Shader skyboxShader;
-    skyboxShader.loadFromFile("forTests/skyboxVertShader.txt", "forTests/skyboxFragShader.txt");
-    skyboxShader.use(); 
-    skyboxShader.setUniform("skybox", st);
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -124,16 +119,11 @@ int main()
             //glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
         //}
 
-        glBindVertexArray(cube.vdh.VAO);
-        skyboxShader.use();
-        skyboxShader.setUniform("matrix", persMat);
-        for (auto& mpart : cube.meshParts) {
-            skyboxShader.bindTextures();
-            glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
-        }
-
-        //ogl::Skybox::renderSkybox();
-        //checkGLError();
+        persMat = persMat * m3d::mat4f().init_rotation_Y(0.008);
+        persMat = persMat * m3d::mat4f().init_rotation_X(0.003);
+        ogl::Skybox::setCameraMatrix(persMat);
+        ogl::Skybox::renderSkybox();
+        checkGLError();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -147,6 +137,5 @@ int main()
         frameCounter++;
     }
     shader.printInfo();
-    skyboxShader.printInfo();
 }
 
