@@ -77,4 +77,16 @@ namespace m3d {
 		return ret;
 	}
 
+	template<class T>
+	inline quat<T> operator*(const quat<T>& q, const vec3<T>& v) {
+		quat<T> ret;
+
+		ret.w = -(q.x * v.x) - (q.y * v.y) - (q.z * v.z);
+		ret.x = (q.w * v.x) + (q.y * v.z) - (q.z * v.y);
+		ret.y = (q.w * v.y) + (q.z * v.x) - (q.x * v.z);
+		ret.z = (q.w * v.z) + (q.x * v.y) - (q.y * v.x);
+
+		return ret;
+	}
+
 }

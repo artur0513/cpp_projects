@@ -5,8 +5,16 @@
 #include "Shader.h"
 #include <chrono>
 #include "Skybox.h"
+#include "Camera.h"
 
-// Z AXIS UP !
+int wx = 853, wy = 480;
+m3d::PersProjInfo info(1.3f, float(wx) / float(wy), 0.1, 30.0);
+ogl::Camera mainCamera(info);
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    mainCamera.keyboardMove(key, action);
+}
 
 void error_callback(int error, const char* description)
 {
@@ -31,10 +39,12 @@ int main()
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+    
+    GLFWwindow* window = glfwCreateWindow(853, 480, "My Title", NULL, NULL);
     if (!window) {
         std::cout << "error creating window \n";
     }
+    glfwSetKeyCallback(window, key_callback);
 
     //glfwMakeContextCurrent(window); //Код чтобы убрать ограничение на 60 фпс
    //glfwSwapInterval(0);
@@ -62,15 +72,13 @@ int main()
     texture.generateMipMap();
 
     ogl::Cubemap st;
-    //std::string st_names[6] = { "forTests\\cubemap\\_#1.dds", "forTests\\cubemap\\_#2.dds",
-    //"forTests\\cubemap\\_#3.dds" , "forTests\\cubemap\\_#4.dds" , "forTests\\cubemap\\_#5.dds" , "forTests\\cubemap\\_#6.dds" };
-
     std::string st_names[6] = { "forTests\\cubemap\\_#1.dds", "forTests\\cubemap\\_#2.dds",
     "forTests\\cubemap\\_#3.dds" , "forTests\\cubemap\\_#4.dds" , "forTests\\cubemap\\_#5.dds" , "forTests\\cubemap\\_#6.dds" };
-    st.loadFromFile(st_names);
-    //st.generateMipMap();
 
-    m3d::PersProjInfo info(3.141f/2.f, 4.f/3.f, 0.1, 30.0);
+    std::string skybox1472[6] = { "forTests\\skybox1472\\sky_l1escape1_bk.dds", "forTests\\skybox1472\\sky_l1escape1_fr.dds",
+    "forTests\\skybox1472\\sky_l1escape1_up.dds" , "forTests\\skybox1472\\sky_l1escape1_down.dds" , "forTests\\skybox1472\\sky_l1escape1_lf.dds" , "forTests\\skybox1472\\sky_l1escape1_rt.dds" };
+    st.loadFromFile(skybox1472);
+    //st.generateMipMap();
 
     ogl::Skybox::initSkybox();
     ogl::Skybox::setSkyboxCubemap(st);
@@ -85,7 +93,6 @@ int main()
     shader.setUniform("texture1", texture);
     shader.setUniform("skybox", st);
     //shader.setUniform("texture2", trollface);
-
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -120,9 +127,9 @@ int main()
         //}
 
         persMat = persMat * m3d::mat4f().init_rotation_Y(0.008);
-        persMat = persMat * m3d::mat4f().init_rotation_X(0.003);
         ogl::Skybox::setCameraMatrix(persMat);
         ogl::Skybox::renderSkybox();
+        mainCamera.update();
         checkGLError();
 
         glfwSwapBuffers(window);

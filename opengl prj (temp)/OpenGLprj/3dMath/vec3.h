@@ -1,4 +1,5 @@
 #pragma once
+#define UP_VECTOR m3d::vec3<float>(0.0f, 1.0f, 0.0f)
 
 namespace m3d {
 

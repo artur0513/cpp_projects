@@ -165,6 +165,18 @@ namespace m3d {
 			return *this;
 		}
 
+		mat4<T>& init_camera_transform(const vec3<T>& target, const vec3<T>& up = UP_VECTOR) {
+			vec3<T> n = normalize(target);
+			vec3<T> u = normalize(cross(up, target));
+			vec3<T> v = cross(n, u);
+
+			data[0] = u.x; data[4] = u.y; data[8] = u.z; data[12] = 0.0;
+			data[1] = v.x; data[5] = v.y; data[9] = v.z; data[13] = 0.0;
+			data[2] = n.x; data[6] = n.y; data[10] = n.z; data[14] = 0.0;
+			data[3] = 0.0; data[7] = 0.0; data[11] = 0.0; data[15] = 1.0;
+			return *this;
+		}
+
 		mat4<T>& init_transfer(const vec3<T>& move) {
 			init_transfer(move.x, move.y, move.z);
 			return *this;

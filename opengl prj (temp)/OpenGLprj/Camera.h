@@ -1,13 +1,30 @@
 #pragma once
 #include "3dMath/3dMath.h"
+#include <chrono>
 
-struct Camera {
-	m3d::PersProjInfo pInfo;
+namespace ogl {
 
-	m3d::vec3d pos;
-	double phi, theta;
+	class Camera{
+	private:
+		m3d::PersProjInfo* pInfo;
+		m3d::vec3f pos, dir, up = UP_VECTOR;
+		
+		std::chrono::steady_clock::time_point prevTimePoint;
+		m3d::vec3f speed;
+		bool forward = false, backward = false, left = false, right = false; // speed
 
-	m3d::vec3d getDirection();
+		float maxSpeed = 1.f;
+	public:
+		Camera(m3d::PersProjInfo& _pInfo);
+		Camera(m3d::PersProjInfo& _pInfo, const m3d::vec3f& pos, const m3d::vec3f& dir);
+		
+		void keyboardMove(int key, int action);
+		void update();
 
-};
+		const m3d::vec3f getPosition();
+		const m3d::vec3f getDirection();
+		const m3d::vec3f getUpVector();
+		const m3d::mat4f getCameraTransform();
+	};
 
+}
