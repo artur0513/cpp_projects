@@ -3,17 +3,18 @@ C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(11,62): warn
 C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(71,25): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
 C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(80,20): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
 C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(91,24): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(114,75): warning C4305: аргумент: усечение из "double" в "T"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(115,75): warning C4305: аргумент: усечение из "double" в "T"
           with
           [
               T=float
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(115,64): warning C4305: аргумент: усечение из "double" в "T"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(116,64): warning C4305: аргумент: усечение из "double" в "T"
           with
           [
               T=float
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(129,63): warning C4305: аргумент: усечение из "double" в "T"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(127,101): warning C4267: аргумент: преобразование из "size_t" в "GLsizei"; возможна потеря данных
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(130,63): warning C4305: аргумент: усечение из "double" в "T"
           with
           [
               T=float
@@ -28,12 +29,12 @@ C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\quat.h(27,1): messa
           [
               T=float
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(114,77): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::quat<float>::quat(T,const m3d::vec3<T> &)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(115,77): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::quat<float>::quat(T,const m3d::vec3<T> &)"
           with
           [
               T=float
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(114,148): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::quat<float>"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(115,148): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::quat<float>"
 C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\quat.h(29,16): warning C4244: =: преобразование "double" в "T", возможна потеря данных
           with
           [
@@ -45,7 +46,7 @@ C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(157,9): warn
               T=float
           ]
 C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(156,1): message : во время компиляции функции-члена класс шаблон "m3d::mat4<float> &m3d::mat4<float>::init_rotation(const m3d::quat<float> &)"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(114,77): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::mat4<float> &m3d::mat4<float>::init_rotation(const m3d::quat<float> &)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(115,77): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::mat4<float> &m3d::mat4<float>::init_rotation(const m3d::quat<float> &)"
 C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(86,16): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::mat4<float>"
 C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(157,31): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
           with

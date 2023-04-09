@@ -8,7 +8,7 @@ out vec3 dir;
 void main()
 {	
 	vec4 persPos = matrix*vec4(pos, 1.0);
-	gl_Position = persPos;
+	gl_Position = persPos.xyww;
 	dir = pos;
 }
 

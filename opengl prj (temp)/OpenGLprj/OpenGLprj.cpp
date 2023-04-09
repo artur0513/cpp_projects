@@ -97,6 +97,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthFunc(GL_LEQUAL);
 
     //auto x = createSkyboxVAO();
 
@@ -114,21 +115,22 @@ int main()
         m3d::mat4f matrix = persMat * m3d::mat4f().init_transfer(0, 0, 1.7) * m3d::mat4f().init_rotation(m3d::quatf(time, m3d::vec3f(0.f, 0.f, 1.f)));
         matrix = persMat * m3d::mat4f().init_transfer(0, 0, 1.7);
 
-        //shader.use();
-        //shader.setUniform("matrix", matrix);
-        //glBindVertexArray(m.vdh.VAO);
+        shader.use();
+        shader.setUniform("matrix", matrix);
+        glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
-        //for (auto& mpart : m.meshParts) {
+        for (auto& mpart : m.meshParts) {
             //shader->setUniform(*mpart.material);
-           // shader.setUniform("map_Kd", texture);
-           // st.setSmooth(std::sin(time) > 0);
-            //shader.bindTextures();
-            //glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
-        //}
+            shader.setUniform("map_Kd", texture);
+            st.setSmooth(std::sin(time) > 0);
+            shader.bindTextures();
+           glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
+        }
 
         persMat = persMat * m3d::mat4f().init_rotation_Y(0.008);
         ogl::Skybox::setCameraMatrix(persMat);
         ogl::Skybox::renderSkybox();
+        
         mainCamera.update();
         checkGLError();
 

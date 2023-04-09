@@ -13,6 +13,6 @@ void main()
 {
 	//FragColor = mix(texture2D(texture1, TexCoord), texture2D(texture2, TexCoord), mixcoeff);
 	//FragColor = mix(texture(map_Kd, TexCoord), texture(skybox, dir), 0.8);
-	FragColor = texture(skybox, dir);
-	//FragColor = texture(map_Kd, dir.xy);
+	//FragColor = texture(skybox, dir);
+	FragColor = texture(map_Kd, TexCoord);
 }
