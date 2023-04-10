@@ -7,13 +7,18 @@
 #include "Skybox.h"
 #include "Camera.h"
 
-int wx = 853, wy = 480;
+int wx = 1280, wy = 720;
 m3d::PersProjInfo info(1.3f, float(wx) / float(wy), 0.1, 30.0);
 ogl::Camera mainCamera(info);
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     mainCamera.keyboardMove(key, action);
+}
+
+void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+    mainCamera.mouseMove(xpos, ypos);
+    glfwSetCursorPos(window, 200, 200);
 }
 
 void error_callback(int error, const char* description)
@@ -40,11 +45,12 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     
-    GLFWwindow* window = glfwCreateWindow(853, 480, "My Title", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(wx, wy, "My Title", NULL, NULL);
     if (!window) {
         std::cout << "error creating window \n";
     }
     glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, cursor_position_callback);
 
     glfwMakeContextCurrent(window);
 
@@ -73,7 +79,7 @@ int main()
 
     std::string skybox1472[6] = { "forTests\\skybox1472\\sky_l1escape1_bk.dds", "forTests\\skybox1472\\sky_l1escape1_fr.dds",
     "forTests\\skybox1472\\sky_l1escape1_up.dds" , "forTests\\skybox1472\\sky_l1escape1_down.dds" , "forTests\\skybox1472\\sky_l1escape1_lf.dds" , "forTests\\skybox1472\\sky_l1escape1_rt.dds" };
-    st.loadFromFile(skybox1472);
+    st.loadFromFile(st_names);
     //st.generateMipMap();
 
     ogl::Skybox::initSkybox();
@@ -115,11 +121,12 @@ int main()
 
         float time = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f;
 
-        m3d::mat4f matrix = persMat * m3d::mat4f().init_transfer(0, -1.3, 1.7) * m3d::mat4f().init_rotation(m3d::quatf(3.14f, m3d::vec3f(0.f, 1.f, 0.f)));
+        // * m3d::mat4f().init_rotation(m3d::quatf(3.14f, m3d::vec3f(0.f, 1.f, 0.f)))
+        m3d::mat4f matrix = persMat * m3d::mat4f().init_transfer(mainCamera.getPosition());
         //matrix = persMat * m3d::mat4f().init_transfer(0, -0.7, 1.7);
 
         shader.use();
-        shader.setUniform("matrix", matrix);
+        shader.setUniform("matrix", m3d::mat4f().init_perspective(info) * mainCamera.getCameraTransform() * m3d::mat4f().init_transfer(0, -0.7, 1.7));
         glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
@@ -130,8 +137,9 @@ int main()
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)(mpart.firstIndex*sizeof(unsigned)));
         }
 
-        persMat = persMat * m3d::mat4f().init_rotation_Y(0.008);
-        ogl::Skybox::setCameraMatrix(persMat);
+        //persMat = persMat * m3d::mat4f().init_rotation_Y(0.008);
+        auto camMat = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_camera_transform(mainCamera.getDirection());
+        ogl::Skybox::setCameraMatrix(camMat);
         ogl::Skybox::renderSkybox();
         
         mainCamera.update();

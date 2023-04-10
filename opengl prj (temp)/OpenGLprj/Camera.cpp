@@ -26,6 +26,12 @@ void ogl::Camera::keyboardMove(int key, int action) {
 
 		if (key == GLFW_KEY_A)
 			left = true;
+
+		if (key == GLFW_KEY_SPACE)
+			up = true;
+
+		if (key == GLFW_KEY_LEFT_CONTROL)
+			down = true;
 	}
 
 	if (action == GLFW_RELEASE) {
@@ -40,15 +46,21 @@ void ogl::Camera::keyboardMove(int key, int action) {
 
 		if (key == GLFW_KEY_A)
 			left = false;
+
+		if (key == GLFW_KEY_SPACE)
+			up = false;
+
+		if (key == GLFW_KEY_LEFT_CONTROL)
+			down = false;
 	}
 
 }
 
 void ogl::Camera::update() {
 	speed = m3d::vec3f(0.f, 0.f, 0.f);
+	speed += (float(left) - float(right)) * m3d::normalize(m3d::cross(dir, upVec));
 	speed += (float(forward) - float(backward)) * m3d::normalize(dir);
-	speed += (float(right) - float(left)) * m3d::normalize(m3d::cross(dir, up));
-
+	speed += (float(up) - float(down)) * upVec;
 	
 	pos += speed * float(double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - prevTimePoint).count())/1000000.0);
 	prevTimePoint = std::chrono::steady_clock::now();
@@ -67,5 +79,27 @@ const m3d::vec3f ogl::Camera::getDirection() {
 
 const m3d::vec3f ogl::Camera::getUpVector() {
 	update();
-	return up;
+	return upVec;
+}
+
+const m3d::mat4f ogl::Camera::getCameraTransform() {
+	update();
+	return m3d::mat4f().init_camera_transform(dir)*m3d::mat4f().init_transfer(-1.f * pos);
+}
+
+void ogl::Camera::mouseMove(double xpos, double ypos) {
+	double deltaX = (xpos - prevMouseXpos)/100.f, deltaY = (ypos - prevMouseYpos) / 100.f;
+
+	auto newQuat = m3d::quatf(deltaX, upVec) * dir * m3d::quatf(deltaX, -1.f * upVec);
+	dir = m3d::vec3f(newQuat.i, newQuat.j, newQuat.k);
+
+	auto axis = m3d::normalize(cross(dir, upVec));
+	newQuat = m3d::quatf(deltaY, -1.f * axis) * dir * m3d::quatf(deltaY, axis);
+	dir = m3d::vec3f(newQuat.i, newQuat.j, newQuat.k);
+
+	//prevMouseXpos = xpos;
+	//prevMouseYpos = ypos;
+
+	prevMouseXpos = 200;
+	prevMouseYpos = 200;
 }

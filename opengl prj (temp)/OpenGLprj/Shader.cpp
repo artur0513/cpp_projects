@@ -121,7 +121,7 @@ void Shader::setUniform(const std::string& name, m3d::vec4f& v) {
     glUniform4f(getUniformLocation(name), v.x, v.y, v.z, v.w);
 }
 
-void Shader::setUniform(const std::string& name, m3d::mat4f& v) {
+void Shader::setUniform(const std::string& name, const m3d::mat4f& v) {
     assert(textureTable.find(getUniformLocation(name)) == textureTable.end() && cubemapTable.find(getUniformLocation(name)) == cubemapTable.end());
     glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, v());
 }

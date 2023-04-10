@@ -39,7 +39,7 @@ namespace ogl {
 		void setUniform(const std::string& name, m3d::vec2f& v);
 		void setUniform(const std::string& name, m3d::vec3f& v);
 		void setUniform(const std::string& name, m3d::vec4f& v);
-		void setUniform(const std::string& name, m3d::mat4f& v);
+		void setUniform(const std::string& name, const m3d::mat4f& v);
 		void setUniform(const Material& mat);
 		//add more uniforms if needed
 

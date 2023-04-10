@@ -166,14 +166,15 @@ namespace m3d {
 		}
 
 		mat4<T>& init_camera_transform(const vec3<T>& target, const vec3<T>& up = UP_VECTOR) {
-			vec3<T> n = normalize(target);
-			vec3<T> u = normalize(cross(up, target));
-			vec3<T> v = cross(n, u);
+			vec3<T> d = normalize(target); // Dir * (-1.f) (z axis)
+			vec3<T> r = normalize(cross(up, target)); // Right (x axis)
+			vec3<T> u = cross(d, r); // Up (y axis)
 
-			data[0] = u.x; data[4] = u.y; data[8] = u.z; data[12] = 0.0;
-			data[1] = v.x; data[5] = v.y; data[9] = v.z; data[13] = 0.0;
-			data[2] = n.x; data[6] = n.y; data[10] = n.z; data[14] = 0.0;
+			data[0] = r.x; data[4] = r.y; data[8] = r.z; data[12] = 0.0;
+			data[1] = u.x; data[5] = -u.y; data[9] = u.z; data[13] = 0.0;
+			data[2] = d.x; data[6] = d.y; data[10] = d.z; data[14] = 0.0;
 			data[3] = 0.0; data[7] = 0.0; data[11] = 0.0; data[15] = 1.0;
+
 			return *this;
 		}
 
@@ -185,8 +186,6 @@ namespace m3d {
 		//void inverse() to be added
 
 		//T determinant() to be added
-
-		//void init_rotation(const quaternion& quat) - to be added
 	};
 
 	template <class T>
