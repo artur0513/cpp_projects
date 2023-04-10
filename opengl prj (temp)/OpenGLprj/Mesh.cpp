@@ -144,8 +144,11 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
         return false;
     }
 
+    unsigned long lineCounter = 0;
     std::string line, name;
     while (getline(file, line)) {
+        lineCounter++;
+
         name = getLineName(line);
         if (name == "#")
             continue;
@@ -169,6 +172,8 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
             loadMaterials(mtllibFile);
         }
         else if (name == "usemtl") {
+            std::cout << line << "  " << lineCounter << " usemtl\n";
+            
             if (meshParts.size() == 0) {
                 hasVertexNormales = vertexNormals.size();
                 hasTextureVertices = textureVertices.size();
@@ -185,6 +190,7 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
                 hasVertexNormales = vertexNormals.size();
                 hasTextureVertices = textureVertices.size();
                 meshParts.push_back(OBJ::MeshPart());
+                (meshParts.end() - 1)->firstIndex = indices.size();
             }
 
             parseFaceLine(line);

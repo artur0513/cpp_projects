@@ -46,9 +46,6 @@ int main()
     }
     glfwSetKeyCallback(window, key_callback);
 
-    //glfwMakeContextCurrent(window); //Код чтобы убрать ограничение на 60 фпс
-   //glfwSwapInterval(0);
-
     glfwMakeContextCurrent(window);
 
     GLenum res = glewInit();
@@ -60,9 +57,8 @@ int main()
     }
     
     // Оно на удивление работает, пишем дальше загрузчик моделей
-    OBJ::Mesh m, cube;
+    OBJ::Mesh m;
     m.loadFromFile("forTests/stol.obj");
-    cube.loadFromFile("forTests/cube.obj");
 
     //m.meshParts.size();
 
@@ -100,11 +96,18 @@ int main()
     glDepthFunc(GL_LEQUAL);
 
     //auto x = createSkyboxVAO();
+    
+    std::cout << m.meshParts.size() << " mesh parts size\n";
+    for (auto& mpart : m.meshParts) {
+        std::cout << mpart.firstIndex << " - " << mpart.firstIndex + mpart.numOfIndices << "\n";
+    }
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     std::chrono::steady_clock::time_point fpsClockStart = std::chrono::steady_clock::now();
     unsigned frameCounter = 0;
     
+    glfwSwapInterval(1);//Код чтобы убрать ограничение на 60 фпс
+    //glDisable(GL_CULL_FACE);
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -112,19 +115,19 @@ int main()
 
         float time = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f;
 
-        m3d::mat4f matrix = persMat * m3d::mat4f().init_transfer(0, 0, 1.7) * m3d::mat4f().init_rotation(m3d::quatf(time, m3d::vec3f(0.f, 0.f, 1.f)));
-        matrix = persMat * m3d::mat4f().init_transfer(0, 0, 1.7);
+        m3d::mat4f matrix = persMat * m3d::mat4f().init_transfer(0, -1.3, 1.7) * m3d::mat4f().init_rotation(m3d::quatf(3.14f, m3d::vec3f(0.f, 1.f, 0.f)));
+        //matrix = persMat * m3d::mat4f().init_transfer(0, -0.7, 1.7);
 
         shader.use();
         shader.setUniform("matrix", matrix);
         glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
-            //shader->setUniform(*mpart.material);
-            shader.setUniform("map_Kd", texture);
+            shader.setUniform(*mpart.material);
+            //shader.setUniform("map_Kd", texture);
             st.setSmooth(std::sin(time) > 0);
             shader.bindTextures();
-           glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)mpart.firstIndex);
+            glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)(mpart.firstIndex*sizeof(unsigned)));
         }
 
         persMat = persMat * m3d::mat4f().init_rotation_Y(0.008);
@@ -137,8 +140,9 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        if (frameCounter == 1000) {
-            float fps = 1000.f * 1000.f / float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - fpsClockStart).count());
+        int frameMax = 200;
+        if (frameCounter == frameMax) {
+            float fps = 1000.f * float(frameMax) / float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - fpsClockStart).count());
             glfwSetWindowTitle(window, std::to_string(fps).c_str());
             fpsClockStart = std::chrono::steady_clock::now();
             frameCounter = 0;
