@@ -104,6 +104,7 @@ namespace ogl {
     protected:
         GLuint id = 0;
 
+        float AFlevel = 8.f;
         bool t_hasMipMap = false, t_isSmooth = true;
         std::string name;
         m3d::vec2<uint32_t> size;
@@ -119,12 +120,14 @@ namespace ogl {
         void bind(GLenum texture = GL_TEXTURE0);
         void generateMipMap();
         void setSmooth(bool smooth);
+        void setFilteringLevel(float AFlevel);
 
-        const GLuint getId();
-        const m3d::vec2<uint32_t> getSize();
-        const std::string& getName();
-        const bool hasMipMap();
-        const bool isSmooth();
+        const float getFilteringLevel() const;
+        const GLuint getId() const;
+        const m3d::vec2<uint32_t> getSize() const;
+        const std::string& getName() const;
+        const bool hasMipMap() const;
+        const bool isSmooth() const;
 
         ~Texture();
     };

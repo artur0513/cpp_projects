@@ -4,7 +4,7 @@
 ogl::Camera::Camera(m3d::PersProjInfo& _pInfo) {
 	pInfo = &_pInfo;
 	pos = m3d::vec3f(0.0, 0.0, 0.0);
-	dir = m3d::vec3f(1.0, 0.0, 0.0);
+	dir = m3d::vec3f(0.0, 0.0, 1.0);
 }
 
 ogl::Camera::Camera(m3d::PersProjInfo& _pInfo, const m3d::vec3f& _pos, const m3d::vec3f& _dir) {
@@ -32,6 +32,9 @@ void ogl::Camera::keyboardMove(int key, int action) {
 
 		if (key == GLFW_KEY_LEFT_CONTROL)
 			down = true;
+
+		if (key == GLFW_KEY_LEFT_SHIFT)
+			shift = true;
 	}
 
 	if (action == GLFW_RELEASE) {
@@ -52,17 +55,20 @@ void ogl::Camera::keyboardMove(int key, int action) {
 
 		if (key == GLFW_KEY_LEFT_CONTROL)
 			down = false;
+
+		if (key == GLFW_KEY_LEFT_SHIFT)
+			shift = false;
 	}
 
 }
 
 void ogl::Camera::update() {
 	speed = m3d::vec3f(0.f, 0.f, 0.f);
-	speed += (float(left) - float(right)) * m3d::normalize(m3d::cross(dir, upVec));
-	speed += (float(forward) - float(backward)) * m3d::normalize(dir);
-	speed += (float(up) - float(down)) * upVec;
+	speed += (double(left) - double(right)) * m3d::normalize(m3d::cross(dir, upVec));
+	speed += (double(forward) - double(backward)) * m3d::normalize(dir);
+	speed += (double(up) - double(down)) * upVec;
 	
-	pos += speed * float(double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - prevTimePoint).count())/1000000.0);
+	pos += speed * defSpeed * (1.0 + double(shift)) * double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - prevTimePoint).count())/1000000.0;
 	prevTimePoint = std::chrono::steady_clock::now();
 
 }
@@ -84,22 +90,14 @@ const m3d::vec3f ogl::Camera::getUpVector() {
 
 const m3d::mat4f ogl::Camera::getCameraTransform() {
 	update();
-	return m3d::mat4f().init_camera_transform(dir)*m3d::mat4f().init_transfer(-1.f * pos);
+	return m3d::mat4f().init_camera_transform(dir)*m3d::mat4f().init_transfer(-1.0 * pos);
 }
 
-void ogl::Camera::mouseMove(double xpos, double ypos) {
-	double deltaX = (xpos - prevMouseXpos)/100.f, deltaY = (ypos - prevMouseYpos) / 100.f;
-
-	auto newQuat = m3d::quatf(deltaX, upVec) * dir * m3d::quatf(deltaX, -1.f * upVec);
-	dir = m3d::vec3f(newQuat.i, newQuat.j, newQuat.k);
+void ogl::Camera::mouseMove(double deltaX, double deltaY) {
+	auto newQuat = m3d::quatd(deltaX, upVec) * dir * m3d::quatd(deltaX, -1.0 * upVec);
+	dir = m3d::vec3d(newQuat.i, newQuat.j, newQuat.k);
 
 	auto axis = m3d::normalize(cross(dir, upVec));
-	newQuat = m3d::quatf(deltaY, -1.f * axis) * dir * m3d::quatf(deltaY, axis);
-	dir = m3d::vec3f(newQuat.i, newQuat.j, newQuat.k);
-
-	//prevMouseXpos = xpos;
-	//prevMouseYpos = ypos;
-
-	prevMouseXpos = 200;
-	prevMouseYpos = 200;
+	newQuat = m3d::quatd(deltaY, -1.0 * axis) * dir * m3d::quatd(deltaY, axis);
+	dir = m3d::vec3d(newQuat.i, newQuat.j, newQuat.k);
 }

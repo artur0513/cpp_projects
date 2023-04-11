@@ -16,9 +16,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     mainCamera.keyboardMove(key, action);
 }
 
+double prevMouseX = 0.0, prevMouseY = 0.0, wxd = 0.0, wyd = 0.0;
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
-    mainCamera.mouseMove(xpos, ypos);
-    glfwSetCursorPos(window, 200, 200);
+    mainCamera.mouseMove((xpos - prevMouseX)/800.0, (ypos - prevMouseY)/800.0);
+
+    prevMouseX = xpos;
+    prevMouseY = ypos;
 }
 
 void error_callback(int error, const char* description)
@@ -49,9 +52,9 @@ int main()
     if (!window) {
         std::cout << "error creating window \n";
     }
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // thats WAY better than GLFW_CURSOR_HIDDEN
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
-
     glfwMakeContextCurrent(window);
 
     GLenum res = glewInit();
@@ -68,7 +71,6 @@ int main()
 
     //m.meshParts.size();
 
-    
     ogl::Texture texture;
     texture.loadFromFile("forTests\\bricks.tga");
     texture.generateMipMap();
@@ -79,7 +81,7 @@ int main()
 
     std::string skybox1472[6] = { "forTests\\skybox1472\\sky_l1escape1_bk.dds", "forTests\\skybox1472\\sky_l1escape1_fr.dds",
     "forTests\\skybox1472\\sky_l1escape1_up.dds" , "forTests\\skybox1472\\sky_l1escape1_down.dds" , "forTests\\skybox1472\\sky_l1escape1_lf.dds" , "forTests\\skybox1472\\sky_l1escape1_rt.dds" };
-    st.loadFromFile(st_names);
+    st.loadFromFile(skybox1472);
     //st.generateMipMap();
 
     ogl::Skybox::initSkybox();
@@ -132,7 +134,7 @@ int main()
         for (auto& mpart : m.meshParts) {
             shader.setUniform(*mpart.material);
             //shader.setUniform("map_Kd", texture);
-            st.setSmooth(std::sin(time) > 0);
+            //st.setSmooth(std::sin(time) > 0);
             shader.bindTextures();
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)(mpart.firstIndex*sizeof(unsigned)));
         }

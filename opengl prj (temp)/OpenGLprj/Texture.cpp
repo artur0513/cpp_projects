@@ -255,6 +255,8 @@ GLuint ogl::Texture::loadFromFile(std::string filename) {
     else 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
+    setFilteringLevel(8.f);
+
     t_hasMipMap = (img->getMipMapCount() > 0); // Сохраняем необходимые данные
     name = filename;
     size.x = img->getWidth();
@@ -267,6 +269,18 @@ GLuint ogl::Texture::loadFromFile(std::string filename) {
 void ogl::Texture::bind(GLenum texture) {
     glActiveTexture(texture);
     glBindTexture(GL_TEXTURE_2D, id);
+}
+
+float maxAnisotropy;
+void ogl::Texture::setFilteringLevel(float _AFlevel) {
+    static bool checkMaxAnisotropy = []() { // call only once to check max anisotropy level
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAnisotropy);
+        return true;
+    } ();
+    
+    glBindTexture(GL_TEXTURE_2D, id);
+    AFlevel = (_AFlevel > maxAnisotropy) ? maxAnisotropy : _AFlevel;
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, AFlevel);
 }
 
 void ogl::Texture::generateMipMap() { // works fine
@@ -295,9 +309,10 @@ void ogl::Texture::setSmooth(bool smooth) { // works fine
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, t_isSmooth ? GL_LINEAR : GL_NEAREST);
 }
 
-const GLuint ogl::Texture::getId() { return id; }
-const bool ogl::Texture::hasMipMap() { return t_hasMipMap; }
-const bool ogl::Texture::isSmooth() { return t_isSmooth; }
-const m3d::vec2<uint32_t> ogl::Texture::getSize() { return size; }
-const std::string& ogl::Texture::getName() { return name; }
+const float ogl::Texture::getFilteringLevel() const { return AFlevel; }
+const GLuint ogl::Texture::getId() const { return id; }
+const bool ogl::Texture::hasMipMap() const { return t_hasMipMap; }
+const bool ogl::Texture::isSmooth() const { return t_isSmooth; }
+const m3d::vec2<uint32_t> ogl::Texture::getSize() const { return size; }
+const std::string& ogl::Texture::getName() const { return name; }
 ogl::Texture::~Texture() { glDeleteTextures(1, &id); }
