@@ -13,7 +13,8 @@ struct VertexDataHandle {
 
 struct Vertex {
     m3d::vec3f pos;
-    m3d::vec2<GLushort> texCoord;
+    //m3d::vec2<GLushort> texCoord; // это на самом деле плохо работает, посколько одна грань может содержать несолько раз повторяющуюся текстуру
+    m3d::vec2f texCoord;
     m3d::vec3<GLshort> normal;
 };
 

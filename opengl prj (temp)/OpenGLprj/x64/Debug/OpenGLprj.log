@@ -1,15 +1,89 @@
-﻿  Texture.cpp
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(8,9): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
+﻿  Mesh.cpp
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(37,34): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(239,43): warning C4244: аргумент: преобразование "__int64" в "_Ty", возможна потеря данных
           with
           [
-              T=uint32_t
+              _Ty=unsigned int
           ]
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(10,1): message : во время компиляции функции-члена класс шаблон "m3d::vec2<uint32_t>::vec2(void)"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Texture.cpp(207,25): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::vec2<uint32_t>::vec2(void)"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Texture.h(110,29): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::vec2<uint32_t>"
-C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec2.h(8,18): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(8,9): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
           with
           [
-              T=uint32_t
+              T=GLshort
           ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(10,1): message : во время компиляции функции-члена класс шаблон "m3d::vec3<GLshort>::vec3(void)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.h(19,1): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::vec3<GLshort>::vec3(void)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.h(18,24): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::vec3<GLshort>"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(8,18): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=GLshort
+          ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(8,27): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=GLshort
+          ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(19,9): warning C4244: =: преобразование "const T" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=GLshort
+          ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(233,38): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::vec3<GLshort> &m3d::vec3<GLshort>::operator =<float>(const m3d::vec3<float> &)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(233,22): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::vec3<GLshort> &m3d::vec3<GLshort>::operator =<float>(const m3d::vec3<float> &)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(19,18): warning C4244: =: преобразование "const T" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=GLshort
+          ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\vec3.h(19,27): warning C4244: =: преобразование "const T" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=GLshort
+          ]
+  OpenGLprj.cpp
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(11,62): warning C4305: инициализация: усечение из "double" в "float"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(75,25): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(84,20): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(95,24): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(131,148): warning C4305: аргумент: усечение из "double" в "T"
+          with
+          [
+              T=float
+          ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(139,121): warning C4267: аргумент: преобразование из "size_t" в "GLsizei"; возможна потеря данных
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(109,37): warning C4244: =: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(108,1): message : во время компиляции функции-члена класс шаблон "m3d::mat4<float> &m3d::mat4<float>::init_perspective(const m3d::PersProjInfo &)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(91,29): message : выполняется компиляция ссылки на экземпляр шаблон функции "m3d::mat4<float> &m3d::mat4<float>::init_perspective(const m3d::PersProjInfo &)"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\OpenGLprj.cpp(90,16): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "m3d::mat4<float>"
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(110,33): warning C4244: =: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\3dMath\mat4.h(111,127): warning C4244: =: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+  ResourceManager.cpp
+  Shader.cpp
+  Skybox.cpp
+  Создание кода...
+C:\Users\artur\Desktop\Артур\OpenGLprj\OpenGLprj\Mesh.cpp(43): warning C4715: OBJ::loadMaterials: значение возвращается не при всех путях выполнения
   OpenGLprj.vcxproj -> C:\Users\artur\Desktop\Артур\OpenGLprj\x64\Debug\OpenGLprj.exe

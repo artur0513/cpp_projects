@@ -125,7 +125,7 @@ void OBJ::Mesh::passToGPU() {
     glEnableVertexAttribArray(0);
 
     // Атрибуты текстурных координат
-    glVertexAttribPointer(1, 2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(Vertex), (void*)(offsetof(Vertex, texCoord)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, texCoord)));
     glEnableVertexAttribArray(1);
 
     // Нормали
@@ -217,8 +217,17 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
     for (auto& uniqueIndex : rawIndices) {
         Vertex v;
         v.pos = geomVertices[uniqueIndex.vertexNum];
-        if (hasTextureVertices)
-            v.texCoord = textureVertices[uniqueIndex.textureNum] * 65536.f;
+        if (hasTextureVertices) {
+            float xc = std::fmodf(textureVertices[uniqueIndex.textureNum].x, 1.0);
+            if (xc < 0.f)
+                xc += 1.f;
+
+            float yc = std::fmodf(textureVertices[uniqueIndex.textureNum].y, 1.0);
+            if (yc < 0.f)
+                yc += 1.f;
+
+            v.texCoord = textureVertices[uniqueIndex.textureNum];
+        }
         if (hasVertexNormales) {
             m3d::vec3f norm = m3d::normalize(vertexNormals[uniqueIndex.normalNum]);
             v.normal = norm * 32767.f;
