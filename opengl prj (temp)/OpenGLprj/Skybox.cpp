@@ -48,7 +48,6 @@ void ogl::Skybox::initSkybox() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    // Координатные атрибуты
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 
@@ -66,6 +65,11 @@ void ogl::Skybox::setSkyboxCubemap(ogl::Cubemap& c) {
 }
 
 void ogl::Skybox::renderSkybox() {
+    // We can use line below to use z-buffer in read-only mode
+    // No need to fix skybox fragment shader for reverse-z
+    // but need to draw skybox before all other stuff
+    //glDepthMask(GL_FALSE); 
+
     glBindVertexArray(VAO);
     skyboxShader.use();
     skyboxShader.setUniform("matrix", *currentCameraMatrix);
@@ -73,4 +77,5 @@ void ogl::Skybox::renderSkybox() {
     skyboxShader.bindTextures();
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
     glBindVertexArray(0);
+    //glDepthMask(GL_TRUE);
 }

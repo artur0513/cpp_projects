@@ -46,7 +46,7 @@ int main()
     glfwSetErrorCallback(error_callback);
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     
     GLFWwindow* window = glfwCreateWindow(wx, wy, "My Title", NULL, NULL);
     if (!window) {
@@ -98,13 +98,33 @@ int main()
     shader.setUniform("skybox", st);
     //shader.setUniform("texture2", trollface);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthFunc(GL_LEQUAL);
+    //glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glDepthFunc(GL_LEQUAL);
 
-    //auto x = createSkyboxVAO();
-    
+    glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
+    GLuint color, depth, fbo;
+
+    glGenTextures(1, &color);
+    glBindTexture(GL_TEXTURE_2D, color);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_SRGB8_ALPHA8, wx, wy);
+
+    glGenTextures(1, &depth);
+    glBindTexture(GL_TEXTURE_2D, depth);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT32F, wx, wy);
+
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth, 0);
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        fprintf(stderr, "glCheckFramebufferStatus: %x\n", status);
+    }
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_GEQUAL);
+
     std::cout << m.meshParts.size() << " mesh parts size\n";
     for (auto& mpart : m.meshParts) {
         std::cout << mpart.firstIndex << " - " << mpart.firstIndex + mpart.numOfIndices << "\n";
@@ -114,12 +134,15 @@ int main()
     std::chrono::steady_clock::time_point fpsClockStart = std::chrono::steady_clock::now();
     unsigned frameCounter = 0;
     
-    glfwSwapInterval(1);//Код чтобы убрать ограничение на 60 фпс
+    glfwSwapInterval(1);//Код чтобы убрать/добавить ограничение на 60 фпс
     //glDisable(GL_CULL_FACE);
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT); //  | GL_DEPTH_BUFFER_BIT
+
+        glClearDepth(0.0f);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         float time = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f;
 
@@ -127,8 +150,12 @@ int main()
         m3d::mat4f matrix = persMat * m3d::mat4f().init_transfer(mainCamera.getPosition());
         //matrix = persMat * m3d::mat4f().init_transfer(0, -0.7, 1.7);
 
+        auto camMat = m3d::mat4f().init_perspective_reversed(info) * m3d::mat4f().init_camera_transform(mainCamera.getDirection());
+        ogl::Skybox::setCameraMatrix(camMat);
+        ogl::Skybox::renderSkybox();
+
         shader.use();
-        shader.setUniform("matrix", m3d::mat4f().init_perspective(info) * mainCamera.getCameraTransform() * m3d::mat4f().init_transfer(0, -0.7, 1.7));
+        shader.setUniform("matrix", m3d::mat4f().init_perspective_reversed(info) * mainCamera.getCameraTransform() * m3d::mat4f().init_transfer(0, -0.7, 1.7));
         glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
@@ -138,11 +165,7 @@ int main()
             shader.bindTextures();
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)(mpart.firstIndex*sizeof(unsigned)));
         }
-
-        //persMat = persMat * m3d::mat4f().init_rotation_Y(0.008);
-        auto camMat = m3d::mat4f().init_perspective(info) * m3d::mat4f().init_camera_transform(mainCamera.getDirection());
-        ogl::Skybox::setCameraMatrix(camMat);
-        ogl::Skybox::renderSkybox();
+        
         
         mainCamera.update();
         checkGLError();
@@ -158,6 +181,16 @@ int main()
             frameCounter = 0;
         }
         frameCounter++;
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // default FBO
+        glBlitFramebuffer(
+            0, 0, wx, wy,
+            0, 0, wx, wy,
+            GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     shader.printInfo();
 }

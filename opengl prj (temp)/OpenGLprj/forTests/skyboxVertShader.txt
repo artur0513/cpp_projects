@@ -8,7 +8,9 @@ out vec3 dir;
 void main()
 {	
 	vec4 persPos = matrix*vec4(pos, 1.0);
-	gl_Position = persPos.xyww;
+	//persPos.z = 0.0;
+	// gl_Position = persPos.xyww; for standart proj
+	gl_Position = persPos; // for reversed z proj
 	dir = pos;
 }
 

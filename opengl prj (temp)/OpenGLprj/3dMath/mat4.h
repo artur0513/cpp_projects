@@ -113,6 +113,14 @@ namespace m3d {
 			return *this;
 		}
 
+		mat4<T>& init_perspective_reversed(const PersProjInfo& p) {
+			data[0] = 1.0 / tan(p.fov_y / 2) / p.aspect_ratio; data[4] = 0.0;  data[8] = 0.0; data[12] = 0.0;
+			data[1] = 0.0; data[5] = 1.0 / tan(p.fov_y / 2.0); data[9] = 0.0;  data[13] = 0.0;
+			data[2] = 0.0; data[6] = 0.0; data[10] = p.z_far / (p.z_far - p.z_near); data[14] = - p.z_far * p.z_near / (p.z_far - p.z_near);
+			data[3] = 0.0; data[7] = 0.0; data[11] = 1.0; data[15] = 0.0;
+			return *this;
+		}
+
 		mat4<T>& init_rotation_X(T angle) {
 			data[0] = 1.0; data[4] = 0.0;             data[8] = 0.0;              data[12] = 0.0;
 			data[1] = 0.0; data[5] = std::cos(angle); data[9] = -std::sin(angle); data[13] = 0.0;
