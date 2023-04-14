@@ -159,7 +159,7 @@ int main()
         glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
-            shader.setUniform(*mpart.material);
+            shader.setUniform(mpart.material);
             //shader.setUniform("map_Kd", texture);
             //st.setSmooth(std::sin(time) > 0);
             shader.bindTextures();

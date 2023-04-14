@@ -3,7 +3,6 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <unordered_map>
 #include <filesystem>
 #include <glew.h>
 #include "3dMath/3dMath.h"

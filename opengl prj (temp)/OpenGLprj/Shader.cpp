@@ -150,9 +150,17 @@ void Shader::setUniform(const std::string& name, Cubemap& v) {
         tableLocation->second = &v;
 }
 
-void Shader::setUniform(const Material& mat) {
-    setUniform("map_Kd", *mat.diffuseTexture);
+void Shader::setUniform(const ogl::Material& mat) {
+    if (mat.diffuseTexture != nullptr)
+        setUniform("map_Kd", *mat.diffuseTexture);
     // add more parametrs when needed
+}
+
+const std::string& Shader::getVertexPath() const {
+    return vertexPath;
+}
+const std::string& Shader::getFragmentPath() const {
+    return fragmentPath;
 }
 
 void Shader::bindTextures() {
@@ -175,6 +183,7 @@ void Shader::bindTextures() {
 GLint Shader::getMaxTextureUnits() {
     GLint maxUnits;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxUnits);
+    std::cout << "max texture units: " << maxUnits << "\n";
     return maxUnits;
 }
 
@@ -190,33 +199,4 @@ void Shader::printInfo() {
 }
 
 Shader::~Shader() { glDeleteProgram(id); }
-
-ShaderManager* ShaderManager::getInstance() {
-    static ShaderManager instance;
-    return &instance;
-}
-
-Shader* ShaderManager::getShader(std::string vertexPath, std::string fragmentPath) {
-    vertexPath = std::filesystem::relative(vertexPath).string();
-    fragmentPath = std::filesystem::relative(fragmentPath).string();
-
-    std::string fullPath = vertexPath + "&" + fragmentPath;
-
-    auto sh_iterator = shaders.find(fullPath);
-
-    if (sh_iterator != shaders.end())
-        return sh_iterator->second;
-
-    Shader* newSh = new Shader();
-    if (!newSh->loadFromFile(vertexPath, fragmentPath))
-        return nullptr;
-
-    shaders.emplace(fullPath, newSh);
-    return newSh;
-}
-
-ShaderManager::~ShaderManager() {
-    for (auto& tex : shaders)
-        delete tex.second; // Texture destructor will free gpu memory
-}
 

@@ -87,9 +87,9 @@ void ogl::Cubemap::bind(GLenum texture) {
     glBindTexture(GL_TEXTURE_CUBE_MAP, id);
 }
 
-const GLuint ogl::Cubemap::getId() { return id; }
-const bool ogl::Cubemap::hasMipMap() { return t_hasMipMap; }
-const bool ogl::Cubemap::isSmooth() { return t_isSmooth; }
-const m3d::vec2<uint32_t> ogl::Cubemap::getSize() { return size; }
-const std::string& ogl::Cubemap::getName(unsigned i) { return name[i < 6 ? i : 0]; }
+const GLuint ogl::Cubemap::getId() const { return id; }
+const bool ogl::Cubemap::hasMipMap() const { return t_hasMipMap; }
+const bool ogl::Cubemap::isSmooth() const { return t_isSmooth; }
+const m3d::vec2<uint32_t> ogl::Cubemap::getSize() const { return size; }
+const std::string& ogl::Cubemap::getName(unsigned i) const { return name[i < 6 ? i : 0]; }
 ogl::Cubemap::~Cubemap() { glDeleteTextures(1, &id); }

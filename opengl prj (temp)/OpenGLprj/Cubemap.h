@@ -23,11 +23,11 @@ namespace ogl {
         void generateMipMap();
         void setSmooth(bool smooth);
 
-        const GLuint getId();
-        const m3d::vec2<uint32_t> getSize();
-        const std::string& getName(unsigned i = 0);
-        const bool hasMipMap();
-        const bool isSmooth();
+        const GLuint getId() const;
+        const m3d::vec2<uint32_t> getSize() const;
+        const std::string& getName(unsigned i = 0) const;
+        const bool hasMipMap() const;
+        const bool isSmooth() const;
 
         ~Cubemap();
     };

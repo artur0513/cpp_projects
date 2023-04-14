@@ -140,7 +140,8 @@
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OpenGLprj.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -154,9 +155,9 @@
     <ClInclude Include="3dMath\vec4.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cubemap.h" />
-    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />

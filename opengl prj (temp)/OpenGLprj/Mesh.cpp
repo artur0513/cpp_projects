@@ -1,47 +1,6 @@
 ﻿#include "Mesh.h"
 #include <unordered_set>
 
-MaterialLibrary* MaterialLibrary::getInstance() {
-    static MaterialLibrary instance;
-    return &instance;
-}
-
-Material* MaterialLibrary::getMaterial(std::string materialName) {
-    auto mat_iterator = materials.find(materialName);
-    if (mat_iterator != materials.end())
-        return &mat_iterator->second;
-
-    return nullptr;
-}
-
-bool OBJ::loadMaterials(std::string filename) {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Can`t open file and load materials: " << filename << "\n";
-        file.close();
-        return false;
-    }
-
-    MaterialLibrary* matlib = MaterialLibrary::getInstance();
-
-    std::string line, name, currentMat;
-    while (getline(file, line)) {
-        name = getLineName(line);
-
-        if (name == "newmtl") {
-            matlib->materials.emplace(line, Material());
-            currentMat = line;
-        }
-        else if (name == "map_Kd") {
-            ogl::Texture *texture = new ogl::Texture(); // Memory leak, besause no texture manager now
-            texture->loadFromFile(line);
-            matlib->materials[currentMat].diffuseTexture = texture;
-        }
-
-    }
-
-}
-
 std::vector<float> OBJ::Mesh::parseCoordLine(std::string line) { // works OK!
     size_t i = 0;
     std::vector<float> numbers;
@@ -115,21 +74,18 @@ void OBJ::Mesh::passToGPU() {
     glBindVertexArray(vdh.VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, vdh.VBO);
-    glBufferData(GL_ARRAY_BUFFER, VBOvertices.size() * sizeof(Vertex), VBOvertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, VBOvertices.size() * sizeof(ogl::Vertex), VBOvertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vdh.EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, EBOindices.size() * sizeof(unsigned), EBOindices.data(), GL_STATIC_DRAW);
 
-    // Координатные атрибуты
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ogl::Vertex), (void*)(offsetof(ogl::Vertex, pos)));
     glEnableVertexAttribArray(0);
 
-    // Атрибуты текстурных координат
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, texCoord)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ogl::Vertex), (void*)(offsetof(ogl::Vertex, texCoord)));
     glEnableVertexAttribArray(1);
 
-    // Нормали
-    glVertexAttribPointer(2, 3, GL_SHORT, GL_TRUE, sizeof(Vertex), (void*)(offsetof(Vertex, normal)));
+    glVertexAttribPointer(2, 3, GL_SHORT, GL_TRUE, sizeof(ogl::Vertex), (void*)(offsetof(ogl::Vertex, normal)));
     glEnableVertexAttribArray(2);
 }
 
@@ -169,7 +125,7 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
         else if (name == "mtllib") {
             std::filesystem::path p(filename);
             mtllibFile = p.parent_path().string() + "\\" + line;
-            loadMaterials(mtllibFile);
+            ogl::Resources::loadMaterials(mtllibFile);
         }
         else if (name == "usemtl") {
             std::cout << line << "  " << lineCounter << " usemtl\n";
@@ -179,17 +135,16 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
                 hasTextureVertices = textureVertices.size();
             }
 
-            meshParts.push_back(OBJ::MeshPart());
+            meshParts.push_back(ogl::MeshPart());
             (meshParts.end() - 1)->firstIndex = indices.size();
-            (meshParts.end() - 1)->materialName = line;
-            (meshParts.end() - 1)->material = MaterialLibrary::getInstance()->getMaterial(line);
+            (meshParts.end() - 1)->material = ogl::Resources::getMaterial(line);
             (meshParts.end() - 1)->hasMaterial = true;
         }
         else if (name == "f") {
             if (meshParts.size() == 0) {
                 hasVertexNormales = vertexNormals.size();
                 hasTextureVertices = textureVertices.size();
-                meshParts.push_back(OBJ::MeshPart());
+                meshParts.push_back(ogl::MeshPart());
                 (meshParts.end() - 1)->firstIndex = indices.size();
             }
 
@@ -215,7 +170,7 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
     }
 
     for (auto& uniqueIndex : rawIndices) {
-        Vertex v;
+        ogl::Vertex v;
         v.pos = geomVertices[uniqueIndex.vertexNum];
         if (hasTextureVertices) {
             float xc = std::fmodf(textureVertices[uniqueIndex.textureNum].x, 1.0);

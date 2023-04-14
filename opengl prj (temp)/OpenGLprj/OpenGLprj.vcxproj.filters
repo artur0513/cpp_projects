@@ -36,7 +36,7 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
+    <ClCompile Include="Material.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Cubemap.cpp">
@@ -46,6 +46,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,9 +80,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Файлы заголовков\resourceLoader</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Файлы заголовков\resourceLoader</Filter>
-    </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Файлы заголовков\resourceLoader</Filter>
     </ClInclude>
@@ -91,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources.h">
+      <Filter>Файлы заголовков\resourceLoader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

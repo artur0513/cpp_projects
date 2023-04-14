@@ -1,21 +1,21 @@
 ﻿#pragma once
+#include "Material.h"
 #include <string>
+#include <unordered_map>
 #include "Texture.h"
 #include "Cubemap.h"
-#include "Mesh.h"
 #include "3dMath/3dMath.h"
 #include <fstream>
 #include <iostream>
-#include <unordered_map>
 #include <glew.h>
 
 namespace ogl {
 
+	struct Material;
+
 	// Шейдер вроде бы работает как надо
 	class Shader {
 	private:
-		//static Shader* activeShader; // Шейдер, который в данный момент используется
-
 		std::string vertexPath, fragmentPath;
 		std::unordered_map<std::string, GLint> uniforms; // Чтобы не вызывать glGetUniformLocation каждый раз
 
@@ -40,30 +40,15 @@ namespace ogl {
 		void setUniform(const std::string& name, m3d::vec3f& v);
 		void setUniform(const std::string& name, m3d::vec4f& v);
 		void setUniform(const std::string& name, const m3d::mat4f& v);
-		void setUniform(const Material& mat);
+		void setUniform(const ogl::Material& mat);
 		//add more uniforms if needed
+
+		const std::string& getVertexPath() const;
+		const std::string& getFragmentPath() const;
 
 		void bindTextures();
 		void printInfo();
 		~Shader();
 	};
-
-	class ShaderManager {
-	private:
-		std::unordered_map<std::string, Shader*> shaders;
-
-		ShaderManager() {};
-		ShaderManager(const ShaderManager& r) {};
-		ShaderManager operator=(const ShaderManager& r) {};
-		ShaderManager(ShaderManager&& r) noexcept {};
-		ShaderManager& operator=(const ShaderManager&& r) noexcept {};
-	public:
-		static ShaderManager* getInstance();
-
-		Shader* getShader(std::string vertexPath, std::string fragmentPath);
-
-		~ShaderManager();
-	};
-
 }
 
