@@ -97,6 +97,12 @@ namespace m3d {
 	}
 
 	template<class T>
+	inline T norm(const vec3<T>& v) {
+		static_assert(std::is_floating_point<T>::value, "This operation is supported only for floating point types");
+		return dot(v, v);
+	}
+
+	template<class T>
 	[[nodiscard]] inline vec3<T> normalize(const vec3<T>& v) {
 		static_assert(std::is_floating_point<T>::value, "This operation is supported only for floating point types");
 		return v / length(v);

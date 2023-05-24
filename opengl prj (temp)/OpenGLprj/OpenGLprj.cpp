@@ -7,6 +7,9 @@
 #include "Skybox.h"
 #include "Camera.h"
 
+#include "windows.h"
+#include "psapi.h"
+
 int wx = 1280, wy = 720;
 m3d::PersProjInfo info(1.3f, float(wx) / float(wy), 0.1, 30.0);
 ogl::Camera mainCamera(info);
@@ -14,6 +17,16 @@ ogl::Camera mainCamera(info);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     mainCamera.keyboardMove(key, action);
+
+    // Print memory usage
+    if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+        PROCESS_MEMORY_COUNTERS_EX pmc;
+        GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+        SIZE_T virtualMemUsedByMe = pmc.PrivateUsage;
+        SIZE_T physMemUsedByMe = pmc.WorkingSetSize;
+        std::cout << "virtual memoty usage (mb): " << double(virtualMemUsedByMe) / (1024.0 * 1024.0) << "\n";
+        std::cout << "phys memoty usage (mb): " << double(physMemUsedByMe) / (1024.0 * 1024.0) << "\n";
+    }
 }
 
 double prevMouseX = 0.0, prevMouseY = 0.0, wxd = 0.0, wyd = 0.0;
@@ -133,7 +146,7 @@ int main()
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     std::chrono::steady_clock::time_point fpsClockStart = std::chrono::steady_clock::now();
     unsigned frameCounter = 0;
-    
+
     glfwSwapInterval(1);//Код чтобы убрать/добавить ограничение на 60 фпс
     //glDisable(GL_CULL_FACE);
     while (!glfwWindowShouldClose(window))
@@ -179,6 +192,7 @@ int main()
             glfwSetWindowTitle(window, std::to_string(fps).c_str());
             fpsClockStart = std::chrono::steady_clock::now();
             frameCounter = 0;
+
         }
         frameCounter++;
 

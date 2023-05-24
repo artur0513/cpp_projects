@@ -141,6 +141,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OpenGLprj.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Optics.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Cubemap.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Optics.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />

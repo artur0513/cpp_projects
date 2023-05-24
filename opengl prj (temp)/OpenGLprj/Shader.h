@@ -23,10 +23,9 @@ namespace ogl {
 		std::unordered_map<GLint, Cubemap*> cubemapTable;
 		GLuint id = 0;
 
-		GLint getMaxTextureUnits();
 		GLint getUniformLocation(const std::string& name);
 	public:
-		GLint maxTextureUnits = getMaxTextureUnits();
+		static GLint maxTextureUnits;
 		[[nodiscard]] GLuint loadFromMemory(const std::string& vertexCode, const std::string& fragmentCode);
 		[[nodiscard]] GLuint loadFromFile(const std::string& _vertexPath, const std::string& _fragmentPath);
 		GLuint getId();

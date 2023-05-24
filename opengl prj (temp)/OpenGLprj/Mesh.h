@@ -57,6 +57,10 @@ namespace OBJ {
     public:
         std::vector<ogl::MeshPart> meshParts; // Тут нужно разделение на обьекты и их части
 
+        const ogl::Vertex* getVBOvertices() const;
+        const unsigned* getEBOindices() const;
+        size_t getVertexCount() const;
+
         ogl::VertexDataHandle vdh;
         std::string& getObjectName();
         bool loadFromFile(std::string filename);

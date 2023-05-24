@@ -3,6 +3,8 @@
 
 using namespace ogl;
 
+GLint Shader::maxTextureUnits = 0;
+
 // https://stackoverflow.com/questions/116038/how-do-i-read-an-entire-file-into-a-stdstring-in-c
 std::string readFile(const std::string& path) {
     constexpr auto read_size = std::size_t(4096);
@@ -163,9 +165,15 @@ const std::string& Shader::getFragmentPath() const {
     return fragmentPath;
 }
 
+bool maxTextureUnitsInit = false;
 void Shader::bindTextures() {
+    if (!maxTextureUnitsInit) {
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+        std::cout << "max texture units: " << maxTextureUnits << "\n";
+        maxTextureUnitsInit = true;
+    }
+
     GLint index = 0;
-    //std::cout << maxTextureUnits << "\n";
     for (auto& t : textureTable) {
         //assert(index < maxTextureUnits); // Trying to bind too many textures ( > maxTextureUnits)
         t.second->bind(GL_TEXTURE0 + index);
@@ -178,13 +186,6 @@ void Shader::bindTextures() {
         glUniform1i(c.first, index);
         index++;
     }
-}
-
-GLint Shader::getMaxTextureUnits() {
-    GLint maxUnits;
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxUnits);
-    std::cout << "max texture units: " << maxUnits << "\n";
-    return maxUnits;
 }
 
 void Shader::printInfo() {

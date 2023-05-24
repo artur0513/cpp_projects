@@ -203,6 +203,10 @@ bool OBJ::Mesh::loadFromFile(std::string _filename) {
     return true;
 }
 
+const ogl::Vertex* OBJ::Mesh::getVBOvertices() const{ return VBOvertices.data(); }
+const unsigned* OBJ::Mesh::getEBOindices() const { return EBOindices.data(); }
+size_t OBJ::Mesh::getVertexCount() const { return VBOvertices.size(); }
+
 OBJ::Mesh::~Mesh() {
     glDeleteBuffers(1, &vdh.EBO);
     glDeleteBuffers(1, &vdh.VBO);
