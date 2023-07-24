@@ -1,0 +1,44 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+const float PI = 3.14159;
+const float THRESHOLD = 0.2; // Минимальная alpha с которой считаем, что встретили препятствие
+const float STEPS = 256.0; // Сколько шагов вдоль луча для текста делаем
+
+uniform sampler2D obstacle_map; // Карта препятствий (она же - синий цвет на текстуре height_map)
+
+uniform vec2 light_position;
+uniform vec2 light_size;
+uniform vec2 light_direction;
+
+uniform vec2 world_camera_size;
+
+void main() {
+	float angle = gl_TexCoord[0].x * (2.0 * PI); // Угол для теста, вдоль которого пускаем луч
+	if (mod(atan(sin(angle), cos(angle)*world_camera_size.x / world_camera_size.y) - light_direction.x, 2.0*PI) > light_direction.y){ // Если этот угол не попадает в ту область, куда светит луч, то ничего не делаем
+		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+		return;
+	}
+	
+	float light_radius = 1.0/sqrt(pow(cos(angle)/light_size.x, 2.0) + pow(sin(angle)/light_size.y, 2.0)); // Радиус источника вдоль данного луча(т.к. это эллипс)
+	
+	for (float i = 0.0; i < STEPS; i += 1.0){
+		float distance = i * light_radius/STEPS; // Расстояние поиска меняется от 0 до light_radius
+		
+		vec2 coord = vec2(cos(angle) * distance, sin(angle)* distance);
+		coord += light_position; // Координаты пикселя для проверки
+		coord = clamp(coord, 0.0, 1.0); // Не выходим за пределы текстуры
+		
+		vec4 data = texture2D(obstacle_map, coord); // Находим этот пиксель на карте препятствий
+		
+		if (data.b > THRESHOLD && data.a > THRESHOLD) { // Если есть препятствие, записываем расстояние и прекращаем поиск.
+            gl_FragColor = vec4(distance/light_radius, 0.0, 0.0, 1.0);
+			//gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+			return;
+		}
+		
+	}
+	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	
+}

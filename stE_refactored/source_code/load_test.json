@@ -1,0 +1,115 @@
+{
+  "light1": {
+    "type": "LightSource",
+    "coordinates": [ 0.0, 0.0, 5.0, 5.0 ],
+    "direction": [ 0.0, 6.5 ],
+    "anims": {
+      "default": [ [ 1.0, 1.0, 1.0, 1.0 ] ]
+    }
+  },
+
+  "light2": {
+    "type": "LightSource",
+    "coordinates": [ 1.0, -2.0, 5.0, 5.0 ],
+    "direction": [ 0.0, 6.5 ],
+    "anims": {
+      "default": [ [ 1.0, 1.0, 1.0, 1.0 ] ]
+    }
+  },
+
+  "obstacle": {
+    "type": "SpriteObject",
+    "sprite_type": "height",
+    "texture": "resources/textures/obstacle.png",
+    "layer_shift": 0.0,
+    "coordinates": [ 2.0, 2.0, 1.0, 1.0 ],
+    "anims": {
+      "idle": [
+        [ 0, 0, 100, 100, 100 ]
+      ]
+    }
+  },
+
+  "tree1": {
+    "type": "SpriteObject",
+    "sprite_type": "diffuse",
+    "texture": "resources/textures/sosna0.png",
+    "layer_shift": 0.145,
+    "coordinates": [ 0.0, 0.0, 1.24, 4.5 ],
+    "anims": {
+      "idle": [
+        [ 0, 0, 1096, 2197, 100 ]
+      ]
+    }
+  },
+
+  "tree1height": {
+    "type": "SpriteObject",
+    "sprite_type": "height",
+    "texture": "resources/textures/sosna0_output.png",
+    "layer_shift": 0.145,
+    "coordinates": [ 0.0, 0.0, 1.24, 4.5 ],
+    "anims": {
+      "idle": [
+        [ 0, 0, 1096, 2197, 100 ]
+      ]
+    }
+  },
+
+  "container": {
+    "type": "SpriteObject",
+    "sprite_type": "diffuse",
+    "texture": "resources/textures/red.png",
+    "layer_shift": 0.05,
+    "coordinates": [ 2.0, 3.58, 1.0, 1.1 ],
+    "anims": {
+      "idle": [
+        [ 0, 0, 129, 146, 100 ]
+      ]
+    }
+  },
+
+  "leaf0": {
+    "type": "SpriteObject",
+    "sprite_type": "diffuse",
+    "texture": "resources/textures/0.png",
+    "layer_shift": -1000.0,
+    "coordinates": [ 2.0, 0.0, 0.2, 0.2 ],
+    "anims": {
+      "fly": [
+        [ 0, 0, 135, 100, 100 ],
+        [ 135, 0, 135, 100, 100 ],
+        [ 270, 0, 135, 100, 100 ],
+        [ 405, 0, 135, 100, 100 ],
+        [ 540, 0, 135, 100, 100 ],
+        [ 675, 0, 135, 100, 100 ],
+        [ 0, 100, 135, 100, 100 ],
+        [ 135, 100, 135, 100, 100 ],
+        [ 270, 100, 135, 100, 100 ],
+        [ 405, 100, 135, 100, 100 ],
+        [ 540, 100, 135, 100, 100 ],
+        [ 675, 100, 135, 100, 100 ],
+        [ 0, 200, 135, 100, 100 ],
+        [ 135, 200, 135, 100, 100 ],
+        [ 270, 200, 135, 100, 100 ],
+        [ 405, 200, 135, 100, 100 ],
+        [ 540, 200, 135, 100, 100 ],
+        [ 675, 200, 135, 100, 100 ],
+        [ 0, 300, 135, 100, 100 ],
+        [ 135, 300, 135, 100, 100 ],
+        [ 270, 300, 135, 100, 100 ],
+        [ 405, 300, 135, 100, 100 ],
+        [ 540, 300, 135, 100, 100 ],
+        [ 675, 300, 135, 100, 100 ],
+        [ 0, 400, 135, 100, 100 ],
+        [ 135, 400, 135, 100, 100 ],
+        [ 270, 400, 135, 100, 100 ],
+        [ 405, 400, 135, 100, 100 ],
+        [ 540, 400, 135, 100, 100 ],
+        [ 675, 400, 135, 100, 100 ]
+      ]
+    }
+  }
+
+
+}
