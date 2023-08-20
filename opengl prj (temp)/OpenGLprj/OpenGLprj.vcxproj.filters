@@ -51,9 +51,6 @@
     <ClCompile Include="Resources.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Optics.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3dMath\3dMath.h">
@@ -97,9 +94,6 @@
     </ClInclude>
     <ClInclude Include="Resources.h">
       <Filter>Файлы заголовков\resourceLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="Optics.h">
-      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

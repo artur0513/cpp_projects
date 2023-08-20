@@ -7,6 +7,7 @@ namespace ogl {
 	class Camera{
 	private:
 		m3d::PersProjInfo* pInfo;
+		m3d::mat4f projectionMatrix;
 		m3d::vec3d pos, dir, upVec = UP_VECTOR;
 		
 		std::chrono::steady_clock::time_point prevTimePoint;
@@ -30,6 +31,12 @@ namespace ogl {
 
 		// Tranform without perspective matrix
 		const m3d::mat4f getCameraTransform();
+
+		// Tranform with perspective matrix, without transfer matrix
+		const m3d::mat4f getSkyboxTransform();
+
+		// Transform with perspective matrix
+		const m3d::mat4f getCombinedTransform();
 	};
 
 }

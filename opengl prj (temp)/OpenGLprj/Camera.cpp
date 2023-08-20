@@ -3,12 +3,14 @@
 
 ogl::Camera::Camera(m3d::PersProjInfo& _pInfo) {
 	pInfo = &_pInfo;
+	projectionMatrix = m3d::mat4f().init_perspective_reversed(*pInfo);
 	pos = m3d::vec3f(0.0, 0.0, 0.0);
 	dir = m3d::vec3f(0.0, 0.0, 1.0);
 }
 
 ogl::Camera::Camera(m3d::PersProjInfo& _pInfo, const m3d::vec3f& _pos, const m3d::vec3f& _dir) {
 	pInfo = &_pInfo;
+	projectionMatrix = m3d::mat4f().init_perspective_reversed(*pInfo);
 	pos = _pos;
 	dir = _dir;
 }
@@ -74,23 +76,33 @@ void ogl::Camera::update() {
 }
 
 const m3d::vec3f ogl::Camera::getPosition() {
-	update();
+	//update(); Should be updated manually in main cycle
 	return pos;
 }
 
 const m3d::vec3f ogl::Camera::getDirection() { 
-	update();
+	//update();
 	return dir;
 }
 
 const m3d::vec3f ogl::Camera::getUpVector() {
-	update();
+	//update();
 	return upVec;
 }
 
 const m3d::mat4f ogl::Camera::getCameraTransform() {
-	update();
+	//update();
 	return m3d::mat4f().init_camera_transform(dir)*m3d::mat4f().init_transfer(-1.0 * pos);
+}
+
+const m3d::mat4f ogl::Camera::getSkyboxTransform() {
+	//update();
+	return projectionMatrix * m3d::mat4f().init_camera_transform(dir);
+}
+
+const m3d::mat4f ogl::Camera::getCombinedTransform() {
+	//update();
+	return projectionMatrix * m3d::mat4f().init_camera_transform(dir) * m3d::mat4f().init_transfer(-1.0 * pos);
 }
 
 void ogl::Camera::mouseMove(double deltaX, double deltaY) {

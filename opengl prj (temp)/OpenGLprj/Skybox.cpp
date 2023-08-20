@@ -4,8 +4,10 @@ ogl::Shader skyboxShader;
 GLuint VAO = 0, VBO = 0, EBO = 0;
 
 ogl::Cubemap* currentCubemap;
+ogl::Camera* currentCamera;
 m3d::mat4f* currentCameraMatrix;
 
+// non optimized version, can be used only one poly, like in my javascript cubemap render
 float skyboxVertices[] = {
 1.0, 1.0, -1.0,
 1.0, -1.0, -1.0,
@@ -56,8 +58,8 @@ void ogl::Skybox::initSkybox() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ogl::Skybox::setCameraMatrix(m3d::mat4f& mat) {
-    currentCameraMatrix = &mat;
+void ogl::Skybox::setCamera(ogl::Camera& cam) {
+    currentCamera = &cam;
 }
 
 void ogl::Skybox::setSkyboxCubemap(ogl::Cubemap& c) {
@@ -72,7 +74,7 @@ void ogl::Skybox::renderSkybox() {
 
     glBindVertexArray(VAO);
     skyboxShader.use();
-    skyboxShader.setUniform("matrix", *currentCameraMatrix);
+    skyboxShader.setUniform("matrix", currentCamera->getSkyboxTransform());
     skyboxShader.setUniform("skybox", *currentCubemap);
     skyboxShader.bindTextures();
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);

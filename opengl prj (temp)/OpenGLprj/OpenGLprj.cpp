@@ -1,4 +1,19 @@
-﻿#include <iostream>
+﻿/*
+TO DO LIST AND PLANS:
+
+new better resource manager
+text rendering (.ttf) 
+support for 3d model format with skeletal animations (and skeletal animation support obviously)
+
+comfortable classes/functions for render textures/framebuffers
+!!! DEFERRED RENDERING (+ multiple render targets, and of cource better material support, lightning techniques)
+instanced rendering
+
+... good effects, shaders, etc...
+*/
+
+
+#include <iostream>
 #include <glew.h>
 #include <glfw3.h>
 #include "Mesh.h"
@@ -95,26 +110,16 @@ int main()
     std::string skybox1472[6] = { "forTests\\skybox1472\\sky_l1escape1_bk.dds", "forTests\\skybox1472\\sky_l1escape1_fr.dds",
     "forTests\\skybox1472\\sky_l1escape1_up.dds" , "forTests\\skybox1472\\sky_l1escape1_down.dds" , "forTests\\skybox1472\\sky_l1escape1_lf.dds" , "forTests\\skybox1472\\sky_l1escape1_rt.dds" };
     st.loadFromFile(skybox1472);
-    //st.generateMipMap();
 
     ogl::Skybox::initSkybox();
     ogl::Skybox::setSkyboxCubemap(st);
-    
-    m3d::mat4f persMat;
-    persMat.init_perspective(info);
-    ogl::Skybox::setCameraMatrix(persMat);
+    ogl::Skybox::setCamera(mainCamera);
 
     ogl::Shader shader;
     shader.loadFromFile("forTests/vertex.txt", "forTests/fragment.txt");
     shader.use();
     shader.setUniform("texture1", texture);
     shader.setUniform("skybox", st);
-    //shader.setUniform("texture2", trollface);
-
-    //glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glDepthFunc(GL_LEQUAL);
 
     glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
     GLuint color, depth, fbo;
@@ -146,41 +151,28 @@ int main()
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     std::chrono::steady_clock::time_point fpsClockStart = std::chrono::steady_clock::now();
     unsigned frameCounter = 0;
-
     glfwSwapInterval(1);//Код чтобы убрать/добавить ограничение на 60 фпс
-    //glDisable(GL_CULL_FACE);
     while (!glfwWindowShouldClose(window))
     {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT); //  | GL_DEPTH_BUFFER_BIT
-
         glClearDepth(0.0f);
-        glClear(GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float time = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count()) / 1000.f;
-
-        // * m3d::mat4f().init_rotation(m3d::quatf(3.14f, m3d::vec3f(0.f, 1.f, 0.f)))
-        m3d::mat4f matrix = persMat * m3d::mat4f().init_transfer(mainCamera.getPosition());
-        //matrix = persMat * m3d::mat4f().init_transfer(0, -0.7, 1.7);
-
-        auto camMat = m3d::mat4f().init_perspective_reversed(info) * m3d::mat4f().init_camera_transform(mainCamera.getDirection());
-        ogl::Skybox::setCameraMatrix(camMat);
+        mainCamera.update(); // updates manually every frame
         ogl::Skybox::renderSkybox();
 
         shader.use();
-        shader.setUniform("matrix", m3d::mat4f().init_perspective_reversed(info) * mainCamera.getCameraTransform() * m3d::mat4f().init_transfer(0, -0.7, 1.7));
+        shader.setUniform("matrix", mainCamera.getCombinedTransform() * m3d::mat4f().init_transfer(0, -0.7, 1.7));
         glBindVertexArray(m.vdh.VAO);
         //glDrawElements(GL_TRIANGLES, 3 , GL_UNSIGNED_INT, (void*)3); Все верно, это рисует только один треугольник
         for (auto& mpart : m.meshParts) {
             shader.setUniform(mpart.material);
-            //shader.setUniform("map_Kd", texture);
-            //st.setSmooth(std::sin(time) > 0);
             shader.bindTextures();
             glDrawElements(GL_TRIANGLES, mpart.numOfIndices, GL_UNSIGNED_INT, (void*)(mpart.firstIndex*sizeof(unsigned)));
         }
         
-        
-        mainCamera.update();
         checkGLError();
 
         glfwSwapBuffers(window);
@@ -196,15 +188,12 @@ int main()
         }
         frameCounter++;
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
         glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // default FBO
-        glBlitFramebuffer(
+        glBlitFramebuffer( // transfer from binded read framebuffer to binded draw framebuffer
             0, 0, wx, wy,
             0, 0, wx, wy,
             GL_COLOR_BUFFER_BIT, GL_LINEAR);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     shader.printInfo();
 }

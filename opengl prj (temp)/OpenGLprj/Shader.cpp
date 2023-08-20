@@ -65,6 +65,21 @@ GLuint Shader::loadFromMemory(const std::string& vertexCode, const std::string& 
         return 0;
     }
 
+    // Analyzing uniforms and creating table
+    GLint count; // number of active uniforms
+    GLint size; // size of the variable
+    GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+    const GLsizei bufSize = 32; // maximum name length
+    GLchar name[bufSize]; // variable name in GLSL
+    GLsizei length; // name length
+
+    glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count);
+    for (int i = 0; i < count; i++) {
+        glGetActiveUniform(id, (GLuint)i, bufSize, &length, &size, &type, name);
+        uniforms.insert(std::pair<std::string, GLint>(name, glGetUniformLocation(id, name)));
+    }
+
     // Удаляем ненужное
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -78,9 +93,7 @@ GLuint Shader::loadFromFile(const std::string& _vertexPath, const std::string& _
     return loadFromMemory(vertexCodeStr, fragmentCodeStr);
 }
 
-GLuint Shader::getId() {
-    return id;
-}
+GLuint Shader::getId() { return id; }
 
 void Shader::use() { glUseProgram(id); }
 

@@ -23,7 +23,7 @@ namespace ogl {
 		std::unordered_map<GLint, Cubemap*> cubemapTable;
 		GLuint id = 0;
 
-		GLint getUniformLocation(const std::string& name);
+		GLint getUniformLocation(const std::string& name); // pretty useless after changing loading function, maybe delete?
 	public:
 		static GLint maxTextureUnits;
 		[[nodiscard]] GLuint loadFromMemory(const std::string& vertexCode, const std::string& fragmentCode);
