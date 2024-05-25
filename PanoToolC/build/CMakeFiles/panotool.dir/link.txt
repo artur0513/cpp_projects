@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/panotool.dir/main.c.o -o panotool  /usr/lib/libGLEW.so /usr/lib/libglfw.so.3.4 /usr/lib/libGLX.so /usr/lib/libOpenGL.so

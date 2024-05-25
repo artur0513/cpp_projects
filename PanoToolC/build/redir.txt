@@ -1,0 +1,16 @@
+/home/artur/panotool 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#1.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#2.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#3.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#4.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#5.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-42_#6.tga 
+recivied arguements: 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#1.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#2.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#3.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#4.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-41_#5.tga 
+/home/artur/Рабочий стол/Артур/cpp_projects/PanoToolC/build/ss_artur_05-25-24_14-05-42_#6.tga 
+ 
+Pano creating successful!
